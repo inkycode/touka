@@ -1,0 +1,17 @@
+apply plugin: 'application'
+
+dependencies {
+    compile project(':core')
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs += [
+                project(':core').sourceSets.main.resources
+            ]
+        }
+    }
+}
+
+mainClassName = "${project.group}.Application"

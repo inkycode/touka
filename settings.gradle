@@ -1,0 +1,3 @@
+rootProject.name = 'silver-zemni'
+
+include 'core', 'application'

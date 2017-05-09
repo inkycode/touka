@@ -1,0 +1,19 @@
+allprojects {
+    apply plugin: 'java'
+
+    group 'com.inkycode.silverzemni'
+    version '1.0.0-SNAPSHOT'
+}
+
+subprojects {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        compile 'org.slf4j:slf4j-api:1.7.21',
+                'com.google.code.gson:gson:2.8.0'
+
+        testCompile 'junit:junit:4.12'
+    }
+}
