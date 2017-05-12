@@ -1,0 +1,4 @@
+{
+    "stringProperty": "A string value",
+    "multipleStringProperty": ["A string value", "Another string value", "A final string value"]
+}

@@ -29,11 +29,18 @@ public class ComponentImpl implements Component {
 
     private Object instance;
 
+    private String instanceName;
+
     private int state;
 
     private final Map<String, Object> properties;
 
     public ComponentImpl(final Class<?> interfaceClass, final Class<?> implementationClass, final Map<String, Object> properties) {
+        this(implementationClass.getName(), interfaceClass, implementationClass, properties);
+    }
+
+    public ComponentImpl(String instanceName, final Class<?> interfaceClass, final Class<?> implementationClass, final Map<String, Object> properties) {
+        this.instanceName = instanceName;
         this.interfaceClass = interfaceClass;
         this.implementationClass = implementationClass;
         this.instance = null;
@@ -49,6 +56,11 @@ public class ComponentImpl implements Component {
     @Override
     public Class<?> getImplementationClass() {
         return this.implementationClass;
+    }
+
+    @Override
+    public String getInstanceName() {
+        return this.instanceName;
     }
 
     @Override

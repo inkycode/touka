@@ -4,15 +4,23 @@ import static com.inkycode.silverzemni.core.bootstrap.impl.ComponentImpl.COMPONE
 import static com.inkycode.silverzemni.core.bootstrap.impl.ComponentImpl.COMPONENT_PROPERTY_NAME_BOOTSTRAP_INTERFACE_CLASS;
 import static java.lang.ClassLoader.getSystemResource;
 
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import javax.swing.InputMap;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
@@ -26,31 +34,32 @@ public class ComponentFactoryImpl implements ComponentFactory {
 
     public static final String DEFAULT_CONFIGURATION_PATH = "BOOTSTRAP-INF/configuration";
 
-    private final Map<Class<?>, Map<Class<?>, Component>> components = new HashMap<Class<?>, Map<Class<?>, Component>>();
+    private final Map<Class<?>, Map<Class<?>, Map<String, Component>>> components = new HashMap<Class<?>, Map<Class<?>, Map<String, Component>>>();
 
-    public static void createComponentFromJson(final String configurationPath, final String classname, final ComponentFactory componentFactory) {
+    public static void createComponents(final String configurationPath, ComponentFactory componentFactory) {
+        Map<Integer, List<Path>> sortedComponentConfigurationFilePaths = new TreeMap<Integer, List<Path>>();
 
-        try {
-            final String filepath = Paths.get(configurationPath, classname) + ".json";
+        putAllConfigurationFilePaths(configurationPath, sortedComponentConfigurationFilePaths);
 
-            final Class<?> implementationClass = ClassLoader.getSystemClassLoader().loadClass(classname);
-            
-            final Path path = Paths.get(getSystemResource(filepath).toURI());
+        for (List<Path> componentConfigurationPaths : sortedComponentConfigurationFilePaths.values()) {
+            for (Path componentConfigurationPath : componentConfigurationPaths) {
+                try {
+                    String[] fileNameParts = componentConfigurationPath.getFileName().toString().split("-");
+                    String componentImplementationClassName = fileNameParts[0].replaceAll(".json$", "");
+                    String componentInstanceName = (fileNameParts.length == 2 ? fileNameParts[1] : fileNameParts[0]).replaceAll(".json$", "");
+                    Class<?> componentImplementationClass = ClassLoader.getSystemClassLoader().loadClass(componentImplementationClassName);
+                    Class<?> componentInterfaceClass = componentImplementationClass.getInterfaces()[0];
 
-            if (implementationClass != null) {
-                final Class<?> interfaceClass = implementationClass.getInterfaces()[0];
+                    Map<String, Object> componentProperties = new HashMap<String, Object>();
 
-                if (interfaceClass != null) {
-                    final Map<String, Object> componentProperties = new HashMap<String, Object>();
-
-                    componentProperties.put(COMPONENT_PROPERTY_NAME_BOOTSTRAP_INTERFACE_CLASS, interfaceClass);
-                    componentProperties.put(COMPONENT_PROPERTY_NAME_BOOTSTRAP_IMPLEMENTATION_CLASS, implementationClass);
+                    componentProperties.put(COMPONENT_PROPERTY_NAME_BOOTSTRAP_INTERFACE_CLASS, componentInterfaceClass);
+                    componentProperties.put(COMPONENT_PROPERTY_NAME_BOOTSTRAP_IMPLEMENTATION_CLASS, componentImplementationClass);
 
                     JsonReader jsonReader = null;
                     try {
                         Gson gson = new Gson();
 
-                        jsonReader = new JsonReader(new FileReader(path.toString()));
+                        jsonReader = new JsonReader(new FileReader(componentConfigurationPath.toString()));
 
                         Map<String, String> componentConfigurationProperties = gson.fromJson(jsonReader, ComponentConfigurationImpl.class);
 
@@ -61,43 +70,72 @@ public class ComponentFactoryImpl implements ComponentFactory {
                         }
                     }
                     
-                    componentFactory.createComponent(componentProperties);
+                    componentFactory.createComponent(componentInstanceName, componentProperties);
+                } catch (IOException | ClassNotFoundException e) {
+                    System.out.println(e);
                 }
             }
-        } catch (final IOException | URISyntaxException | ClassNotFoundException e) {
-            e.printStackTrace();
         }
     }
 
-    public ComponentFactoryImpl() {
-        ComponentFactoryImpl.createComponentFromJson(DEFAULT_CONFIGURATION_PATH, PropertyInjector.class.getName(), this);
-        ComponentFactoryImpl.createComponentFromJson(DEFAULT_CONFIGURATION_PATH, ComponentInjector.class.getName(), this);
+    public static void putAllConfigurationFilePaths(String basePath, Map<Integer, List<Path>> sortedComponentConfigurationFilePaths) {
+        putAllConfigurationFilePaths(basePath, sortedComponentConfigurationFilePaths, Integer.MAX_VALUE);
+    }
+
+    public static void putAllConfigurationFilePaths(String basePath, Map<Integer, List<Path>> sortedComponentConfigurationFilePaths, int level) {
+        try {
+            InputStream inputStream =  ClassLoader.getSystemResourceAsStream(basePath);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            List<Path> componentConfigurationPaths = new ArrayList<Path>();
+            String resourceName = "";
+            
+            while ((resourceName = bufferedReader.readLine()) != null) {
+                Path resourcePath = Paths.get(basePath, resourceName);
+                Path filePath = Paths.get(ClassLoader.getSystemResource(resourcePath.toString()).toURI());
+
+                if (Files.exists(filePath)) {
+                    if (Files.isDirectory(filePath)) {
+                        putAllConfigurationFilePaths(Paths.get(basePath, resourceName).toString(), sortedComponentConfigurationFilePaths, Integer.valueOf(resourceName));
+                    } else if (Files.isRegularFile(filePath)) {
+                        componentConfigurationPaths.add(filePath);
+                    }
+                } else {
+                    // No such file found
+                }
+            }
+
+            bufferedReader.close();
+            inputStream.close();
+
+            sortedComponentConfigurationFilePaths.put(level, componentConfigurationPaths);
+        } catch (IOException | URISyntaxException e) {
+
+        }
     }
 
     @Override
-    public void createComponent(final Map<String, Object> properties) {
-        this.createComponent((Class<?>) properties.get(COMPONENT_PROPERTY_NAME_BOOTSTRAP_INTERFACE_CLASS), (Class<?>) properties.get(COMPONENT_PROPERTY_NAME_BOOTSTRAP_IMPLEMENTATION_CLASS), properties);
+    public void createComponent(final String instanceName, final Map<String, Object> properties) {
+        this.createComponent((Class<?>) properties.get(COMPONENT_PROPERTY_NAME_BOOTSTRAP_INTERFACE_CLASS), (Class<?>) properties.get(COMPONENT_PROPERTY_NAME_BOOTSTRAP_IMPLEMENTATION_CLASS), instanceName, properties);
     }
 
     @Override
-    public void createComponent(final Class<?> interfaceClass, final Class<?> implementationClass) {
-        this.createComponent(interfaceClass, implementationClass, null);
-    }
-
-    @Override
-    public void createComponent(final Class<?> interfaceClass, final Class<?> implementationClass, final Map<String, Object> properties) {
+    public void createComponent(final Class<?> interfaceClass, final Class<?> implementationClass, final String instanceName, final Map<String, Object> properties) {
         if (!this.components.containsKey(interfaceClass)) {
-            this.components.put(interfaceClass, new HashMap<Class<?>, Component>());
+            this.components.put(interfaceClass, new HashMap<Class<?>, Map<String, Component>>());
         }
 
         if (!this.components.get(interfaceClass).containsKey(implementationClass)) {
-            final Component component = new ComponentImpl(interfaceClass, implementationClass, properties != null ? properties : new HashMap<String, Object>());
+            final Component component = new ComponentImpl(instanceName, interfaceClass, implementationClass, properties != null ? properties : new HashMap<String, Object>());
 
             component.create();
 
             component.inject(getAllComponentInstances(Injector.class), this);
 
-            this.components.get(interfaceClass).put(implementationClass, component);
+            if (this.components.get(interfaceClass).get(implementationClass) == null) {
+                this.components.get(interfaceClass).put(implementationClass, new HashMap<String, Component>());
+            }
+
+            this.components.get(interfaceClass).get(implementationClass).put(instanceName, component);
         } else {
             // Component for given interface and implementation already exists
         }
@@ -118,7 +156,12 @@ public class ComponentFactoryImpl implements ComponentFactory {
     public Component getComponent(final Class<?> interfaceClass, final Class<?> implementationClass) {
         if (this.components.containsKey(interfaceClass)) {
             if (this.components.get(interfaceClass).containsKey(implementationClass)) {
-                return this.components.get(interfaceClass).get(implementationClass);
+                return this.components.get(interfaceClass)
+                    .get(implementationClass)
+                    .values()
+                    .stream()
+                    .findFirst()
+                    .get();
             } else {
                 // No component for given implementation class found
             }
@@ -133,7 +176,15 @@ public class ComponentFactoryImpl implements ComponentFactory {
     public Component getComponent(final Class<?> interfaceClass) {
         if (this.components.containsKey(interfaceClass)) {
             if (!this.components.get(interfaceClass).isEmpty()) {
-                return this.components.get(interfaceClass).values().iterator().next();
+                return this.components.get(interfaceClass)
+                    .values()
+                    .stream()
+                    .findFirst()
+                    .get()
+                    .values()
+                    .stream()
+                    .findFirst()
+                    .get();
             } else {
                 // No component for given implementation class found
             }
@@ -148,9 +199,11 @@ public class ComponentFactoryImpl implements ComponentFactory {
     public List<Component> getAllComponents() {
         final List<Component> components = new ArrayList<Component>();
 
-        for (final Map<Class<?>, Component> componentEntry : this.components.values()) {
-            for (final Component component : componentEntry.values()) {
-                components.add(component);
+        for (final Map<Class<?>, Map<String, Component>> componentEntry : this.components.values()) {
+            for (final Map<String, Component> componentMap : componentEntry.values()) {
+                for (final Component component : componentMap.values()) {
+                    components.add(component);
+                }
             }
         }
 
@@ -161,7 +214,13 @@ public class ComponentFactoryImpl implements ComponentFactory {
     public List<Component> getAllComponents(final Class<?> interfaceClass) {
         if (this.components.containsKey(interfaceClass)) {
             if (!this.components.get(interfaceClass).isEmpty()) {
-                return new ArrayList<Component>(this.components.get(interfaceClass).values());
+                List<Component> components = new ArrayList<Component>();
+
+                for (Map<String, Component> componentMap : this.components.get(interfaceClass).values()) {
+                    components.addAll(componentMap.values());
+                }
+
+                return components;
             } else {
                 // No component for given implementation class found
             }

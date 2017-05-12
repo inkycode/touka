@@ -9,6 +9,8 @@ public interface Component {
 
     Class<?> getImplementationClass();
 
+    String getInstanceName();
+
     Object getInstance();
 
     <T> T getInstance(Class<T> clazz);

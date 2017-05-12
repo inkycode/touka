@@ -5,11 +5,9 @@ import java.util.Map;
 
 public interface ComponentFactory {
 
-    void createComponent(Map<String, Object> properties);
+    void createComponent(String instanceName, Map<String, Object> properties);
 
-    void createComponent(Class<?> interfaceClass, Class<?> implementationClass);
-
-    void createComponent(Class<?> interfaceClass, Class<?> implementationClass, Map<String, Object> properties);
+    void createComponent(Class<?> interfaceClass, Class<?> implementationClass, String instanceName, Map<String, Object> properties);
 
     void activateComponent(Class<?> interfaceClass, Class<?> implementationClass);
 
