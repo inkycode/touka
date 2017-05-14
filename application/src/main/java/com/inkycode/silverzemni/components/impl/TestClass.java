@@ -3,6 +3,7 @@ package com.inkycode.silverzemni.components.impl;
 import java.util.List;
 import java.util.Map;
 
+import com.inkycode.silverzemni.components.FactoryInterface;
 import com.inkycode.silverzemni.components.InjectedInterface;
 import com.inkycode.silverzemni.components.TestInterface;
 import com.inkycode.silverzemni.core.bootstrap.annotations.Activate;
@@ -25,7 +26,7 @@ public class TestClass implements TestInterface {
 
     @Inject
     @Source("component")
-    private Map<String, FactoryClass> factory;
+    private Map<String, FactoryInterface> factory;
 
     @Activate
     public void activate() {

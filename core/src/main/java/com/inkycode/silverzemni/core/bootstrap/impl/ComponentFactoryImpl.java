@@ -72,9 +72,13 @@ public class ComponentFactoryImpl implements ComponentFactory {
                     
                     componentFactory.createComponent(componentInstanceName, componentProperties);
                 } catch (IOException | ClassNotFoundException e) {
-                    System.out.println(e);
+
                 }
             }
+        }
+
+        for (Component component : componentFactory.getAllComponents()) {
+            component.inject(componentFactory.getAllComponentInstances(Injector.class), componentFactory);
         }
     }
 
@@ -129,7 +133,7 @@ public class ComponentFactoryImpl implements ComponentFactory {
 
             component.create();
 
-            component.inject(getAllComponentInstances(Injector.class), this);
+            //component.inject(getAllComponentInstances(Injector.class), this);
 
             if (this.components.get(interfaceClass).get(implementationClass) == null) {
                 this.components.get(interfaceClass).put(implementationClass, new HashMap<String, Component>());
