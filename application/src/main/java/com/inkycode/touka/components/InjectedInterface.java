@@ -1,4 +1,4 @@
-package com.inkycode.silverzemni.components;
+package com.inkycode.touka.components;
 
 public interface InjectedInterface {
 
