@@ -1,19 +1,15 @@
-package com.inkycode.touka.components.impl;
+package com.inkycode.touka.core.application.impl;
 
 import static com.inkycode.touka.core.bootstrap.impl.ComponentFactoryImpl.DEFAULT_CONFIGURATION_PATH;
 
-import static org.lwjgl.opengl.GL.createCapabilities;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-
 import org.slf4j.Logger;
 
-import com.inkycode.touka.Application;
+import com.inkycode.touka.core.application.Application;
 import com.inkycode.touka.core.bootstrap.annotations.Activate;
 import com.inkycode.touka.core.bootstrap.annotations.Inject;
 import com.inkycode.touka.core.bootstrap.annotations.Source;
 import com.inkycode.touka.core.bootstrap.impl.ComponentFactoryImpl;
+import com.inkycode.touka.core.graphics.Renderer;
 import com.inkycode.touka.core.platform.Canvas;
 import com.inkycode.touka.core.platform.Platform;
 
@@ -31,6 +27,10 @@ public class ApplicationImpl implements Application {
     @Source("component")
     private Canvas canvas;
 
+    @Inject
+    @Source("component")
+    private Renderer renderer;
+
     @Activate
     @Override
     public void start() {
@@ -43,7 +43,7 @@ public class ApplicationImpl implements Application {
         this.startup();
 
         while (!this.canvas.isClosing()) {
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            renderer.clearBuffers();
 
             canvas.swapBuffers();
 
@@ -58,17 +58,15 @@ public class ApplicationImpl implements Application {
 
         canvas.initialise();
         
-        createCapabilities();
+        renderer.initialise();
     }
 
     private void shutdown() {
+        renderer.deinitialise();
+
         canvas.deinitialise();
 
         platform.deinitialise();
-    }
-
-    public static void main(final String[] args) {
-        new ComponentFactoryImpl().initialise(DEFAULT_CONFIGURATION_PATH);
     }
 
 }
