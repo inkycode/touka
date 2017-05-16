@@ -1,7 +1,5 @@
 package com.inkycode.touka.core.application.impl;
 
-import static com.inkycode.touka.core.bootstrap.impl.ComponentFactoryImpl.DEFAULT_CONFIGURATION_PATH;
-
 import org.slf4j.Logger;
 
 import com.inkycode.touka.core.application.Application;
@@ -9,12 +7,11 @@ import com.inkycode.touka.core.application.ScreenManager;
 import com.inkycode.touka.core.bootstrap.annotations.Activate;
 import com.inkycode.touka.core.bootstrap.annotations.Inject;
 import com.inkycode.touka.core.bootstrap.annotations.Source;
-import com.inkycode.touka.core.bootstrap.impl.ComponentFactoryImpl;
 import com.inkycode.touka.core.graphics.Renderer;
 import com.inkycode.touka.core.platform.Canvas;
 import com.inkycode.touka.core.platform.Platform;
 
-public class ApplicationImpl implements Application {
+public class DefaultApplicationFramework implements Application {
 
     @Inject
     @Source("logger")
