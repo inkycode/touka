@@ -5,19 +5,23 @@ import java.util.Map;
 
 public interface ComponentFactory {
 
+    void initialise(String configurationPath);
+
+    void createComponents(String configurationPath);
+
+    void injectComponents();
+
+    void activateComponents();
+
     void createComponent(String instanceName, Map<String, Object> properties);
 
     void createComponent(Class<?> interfaceClass, Class<?> implementationClass, String instanceName, Map<String, Object> properties);
 
-    void activateComponent(Class<?> interfaceClass, Class<?> implementationClass);
-
-    Component getComponent(Class<?> interfaceClass, Class<?> implementationClass);
-
     Component getComponent(Class<?> interfaceClass);
 
-    List<Component> getAllComponents();
+    List<Component> getComponents();
 
-    List<Component> getAllComponents(Class<?> interfaceClass);
+    List<Component> getComponents(Class<?> interfaceClass);
 
-    <T> List<T> getAllComponentInstances(Class<T> interfaceClass);
+    <T> List<T> getComponentInstances(Class<T> interfaceClass);
 }

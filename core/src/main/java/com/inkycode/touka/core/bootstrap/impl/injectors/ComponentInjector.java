@@ -2,7 +2,6 @@ package com.inkycode.touka.core.bootstrap.impl.injectors;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,12 +19,13 @@ public class ComponentInjector implements Injector {
         if (Map.class.isAssignableFrom(field.getType())) {
             if (field.getGenericType() instanceof ParameterizedType) {
                 ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
-                Type componentType = parameterizedType.getActualTypeArguments()[1];
-                Class<?> componentClass = (Class<?>) componentType;
+                Class<?> componentInterface = (Class<?>) parameterizedType.getActualTypeArguments()[1];
+
                 Map<String, Object> componentInstanceMap = new HashMap<String, Object>();
-                for (Component componentToInject : componentFactory.getAllComponents(componentClass)) {
+                for (Component componentToInject : componentFactory.getComponents(componentInterface)) {
                     componentInstanceMap.put(componentToInject.getInstanceName(), componentToInject.getInstance());
                 }
+
                 return componentInstanceMap;
             }
         } else {

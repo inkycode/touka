@@ -1,0 +1,11 @@
+project.ext.lwjglVersion = "3.1.1"
+
+dependencies {
+    compile "org.lwjgl:lwjgl:${lwjglVersion}",
+            "org.lwjgl:lwjgl-glfw:${lwjglVersion}",
+            "org.lwjgl:lwjgl-opengl:${lwjglVersion}"
+    
+    runtime "org.lwjgl:lwjgl:${lwjglVersion}:natives-windows",
+            "org.lwjgl:lwjgl-glfw:${lwjglVersion}:natives-windows",
+            "org.lwjgl:lwjgl-opengl:${lwjglVersion}:natives-windows"
+}
