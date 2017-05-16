@@ -5,6 +5,7 @@ import static com.inkycode.touka.core.bootstrap.impl.ComponentFactoryImpl.DEFAUL
 import org.slf4j.Logger;
 
 import com.inkycode.touka.core.application.Application;
+import com.inkycode.touka.core.application.ScreenManager;
 import com.inkycode.touka.core.bootstrap.annotations.Activate;
 import com.inkycode.touka.core.bootstrap.annotations.Inject;
 import com.inkycode.touka.core.bootstrap.annotations.Source;
@@ -20,6 +21,10 @@ public class ApplicationImpl implements Application {
     private Logger log;
 
     @Inject
+    @Source("property")
+    private String initialScreenName;
+
+    @Inject
     @Source("component")
     private Platform platform;
 
@@ -30,6 +35,10 @@ public class ApplicationImpl implements Application {
     @Inject
     @Source("component")
     private Renderer renderer;
+
+    @Inject
+    @Source("component")
+    private ScreenManager screenManager;
 
     @Activate
     @Override
@@ -45,6 +54,10 @@ public class ApplicationImpl implements Application {
         while (!this.canvas.isClosing()) {
             renderer.clearBuffers();
 
+            screenManager.getActiveScreen().render();
+
+            screenManager.getActiveScreen().update();
+
             canvas.swapBuffers();
 
             platform.update();
@@ -59,6 +72,8 @@ public class ApplicationImpl implements Application {
         canvas.initialise();
         
         renderer.initialise();
+
+        screenManager.setActiveScreen(this.initialScreenName);
     }
 
     private void shutdown() {

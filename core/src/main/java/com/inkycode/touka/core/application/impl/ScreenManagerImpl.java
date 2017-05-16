@@ -1,0 +1,36 @@
+package com.inkycode.touka.core.application.impl;
+
+import java.util.Map;
+
+import com.inkycode.touka.core.application.Screen;
+import com.inkycode.touka.core.application.ScreenManager;
+import com.inkycode.touka.core.bootstrap.annotations.Inject;
+import com.inkycode.touka.core.bootstrap.annotations.Source;
+
+public class ScreenManagerImpl implements ScreenManager {
+
+
+    private Screen activeScreen;
+
+    @Inject
+    @Source("component")
+    private Map<String, Screen> screens;
+
+    @Override
+    public void setActiveScreen(Class<?> screen) {
+        this.setActiveScreen(screen.getName());
+    }
+
+    @Override
+    public void setActiveScreen(String screenName) {
+        if (this.screens.containsKey(screenName)) {
+            this.activeScreen = this.screens.get(screenName);
+        }
+    }
+
+    @Override
+    public Screen getActiveScreen() {
+        return this.activeScreen;
+    }
+    
+}
