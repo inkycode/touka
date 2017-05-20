@@ -25,12 +25,6 @@ import com.inkycode.touka.core.platform.Canvas;
 
 public class GLFWCanvas implements Canvas {
 
-    public static final long DISPLAY_MODE_UNKOWN = 0x00;
-    public static final long DISPLAY_MODE_WINDOW = 0x01;
-    public static final long DISPLAY_MODE_BORDERLESS_WINDOW = 0x02;
-
-    public static final long MONITOR_NULL = NULL;
-
     private long handle;
 
     private int width;
@@ -49,7 +43,7 @@ public class GLFWCanvas implements Canvas {
 
     @Inject
     @Source("property")
-    @Default(longValue = MONITOR_NULL)
+    @Default(longValue = NULL)
     private long monitor;
 
     @Inject
@@ -68,7 +62,7 @@ public class GLFWCanvas implements Canvas {
             this.width = videoMode.width();
             this.height = videoMode.height();
 
-            this.monitor = this.monitor == MONITOR_NULL ? glfwGetPrimaryMonitor() : this.monitor;
+            this.monitor = this.monitor == NULL ? glfwGetPrimaryMonitor() : this.monitor;
         } else {
 
             this.width = 300;
