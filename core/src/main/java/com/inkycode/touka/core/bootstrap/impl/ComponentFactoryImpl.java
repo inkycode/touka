@@ -70,7 +70,6 @@ public class ComponentFactoryImpl implements ComponentFactory {
 
     @Override
     public void injectComponents() {
-        // TODO: Move out of component logic
         for (Component component : this.getComponents()) {
             component.inject(this.getComponentInstances(Injector.class), this);
         }

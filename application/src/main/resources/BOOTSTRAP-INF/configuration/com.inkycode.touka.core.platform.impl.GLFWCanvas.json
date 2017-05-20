@@ -1,4 +1,5 @@
 {
     "title": "Touka Application",
-    "vsync": false
+    "vsync": false,
+    "displayMode": 1
 }

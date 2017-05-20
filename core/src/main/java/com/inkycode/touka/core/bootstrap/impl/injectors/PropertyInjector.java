@@ -14,27 +14,50 @@ public class PropertyInjector implements Injector {
     }
 
     public Object getValue(Field field, Component component, ComponentFactory componentFactory) {
+        Class<?> fieldTypeClass = field.getType();
+
         if (component.getProperties().containsKey(field.getName())) {
-            return component.getProperties().get(field.getName());
+            Object propertyValue = component.getProperties().get(field.getName());
+            Class<?> propertyClass = propertyValue.getClass();
+
+            if (propertyClass == Double.class) {
+                Double doubleValue = (Double) propertyValue;
+
+                if (fieldTypeClass == Integer.class || fieldTypeClass == int.class) {
+                    return doubleValue.intValue();
+                } else if (fieldTypeClass == Long.class || fieldTypeClass == long.class) {
+                    return doubleValue.longValue();
+                } else if (fieldTypeClass == Float.class || fieldTypeClass == float.class) {
+                    return doubleValue.floatValue();
+                } else if (fieldTypeClass == Double.class || fieldTypeClass == double.class) {
+                    return doubleValue.doubleValue();
+                } else if (fieldTypeClass == Boolean.class || fieldTypeClass == boolean.class) {
+                    return doubleValue > 0;
+                } else if (fieldTypeClass == String.class) {
+                    return String.valueOf(doubleValue);
+                }
+            }
+
+            return propertyValue;
         } else {
             if (field.isAnnotationPresent(Default.class)) {
                 Default defaultAnnotation = field.getDeclaredAnnotation(Default.class);
 
-                if (field.getType() == Integer.class || field.getType() == int.class) {
+                if (fieldTypeClass == Integer.class || fieldTypeClass == int.class) {
                     return defaultAnnotation.intValue();
-                } else if (field.getType() == Long.class || field.getType() == long.class) {
+                } else if (fieldTypeClass == Long.class || fieldTypeClass == long.class) {
                     return defaultAnnotation.longValue();
-                } else if (field.getType() == Float.class || field.getType() == float.class) {
+                } else if (fieldTypeClass == Float.class || fieldTypeClass == float.class) {
                     return defaultAnnotation.floatValue();
-                } else if (field.getType() == Double.class || field.getType() == double.class) {
+                } else if (fieldTypeClass == Double.class || fieldTypeClass == double.class) {
                     return defaultAnnotation.doubleValue();
-                } else if (field.getType() == Boolean.class || field.getType() == boolean.class) {
+                } else if (fieldTypeClass == Boolean.class || fieldTypeClass == boolean.class) {
                     return defaultAnnotation.booleanValue();
-                } else if (field.getType() == String.class) {
+                } else if (fieldTypeClass == String.class) {
                     return defaultAnnotation.stringValue();
-                } else {
-                    return defaultAnnotation.value();
                 }
+                
+                return defaultAnnotation.value();
             }
 
             return null;
