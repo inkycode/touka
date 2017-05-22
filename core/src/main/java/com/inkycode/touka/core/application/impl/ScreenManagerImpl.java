@@ -24,7 +24,13 @@ public class ScreenManagerImpl implements ScreenManager {
     @Override
     public void setActiveScreen(String screenName) {
         if (this.screens.containsKey(screenName)) {
+            if (this.activeScreen != null) {
+                this.activeScreen.unload();
+            }
+
             this.activeScreen = this.screens.get(screenName);
+
+            this.activeScreen.load();
         }
     }
 

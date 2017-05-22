@@ -13,4 +13,8 @@ public interface Canvas {
     void swapBuffers();
 
     boolean isClosing();
+
+    int getWidth();
+
+    int getHeight();
 }

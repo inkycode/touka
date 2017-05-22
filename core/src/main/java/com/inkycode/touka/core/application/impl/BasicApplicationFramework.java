@@ -70,10 +70,15 @@ public class BasicApplicationFramework implements Application {
         
         renderer.initialise();
 
+        renderer.setViewport(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
+        renderer.setClearColor(0, 155, 255);
+
         screenManager.setActiveScreen(this.initialScreenName);
     }
 
     private void shutdown() {
+        screenManager.getActiveScreen().unload();
+
         renderer.deinitialise();
 
         canvas.deinitialise();

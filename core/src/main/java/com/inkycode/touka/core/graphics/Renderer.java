@@ -8,4 +8,8 @@ public interface Renderer {
 
     void clearBuffers();
 
+    void setClearColor(int red, int green, int blue);
+
+    void setViewport(int x, int y, int width, int height);
+
 }

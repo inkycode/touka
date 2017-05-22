@@ -65,8 +65,8 @@ public class GLFWCanvas implements Canvas {
             this.monitor = this.monitor == NULL ? glfwGetPrimaryMonitor() : this.monitor;
         } else {
 
-            this.width = 300;
-            this.height = 300;
+            this.width = 1024;
+            this.height = 768;
 
             this.monitor = NULL;
         }
@@ -92,6 +92,16 @@ public class GLFWCanvas implements Canvas {
     @Override
     public boolean isClosing() {
         return glfwWindowShouldClose(this.handle);
+    }
+
+    @Override
+    public int getWidth() {
+        return this.width;
+    }
+
+    @Override
+    public int getHeight() {
+        return this.height;
     }
 
 }
