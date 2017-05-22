@@ -22,6 +22,7 @@ public class ComponentInjector implements Injector {
                 Class<?> componentInterface = (Class<?>) parameterizedType.getActualTypeArguments()[1];
 
                 Map<String, Object> componentInstanceMap = new HashMap<String, Object>();
+
                 for (Component componentToInject : componentFactory.getComponents(componentInterface)) {
                     componentInstanceMap.put(componentToInject.getInstanceName(), componentToInject.getInstance());
                 }

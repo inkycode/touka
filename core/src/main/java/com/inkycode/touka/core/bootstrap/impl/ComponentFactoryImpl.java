@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,6 +24,8 @@ import com.google.gson.stream.JsonReader;
 import com.inkycode.touka.core.bootstrap.Component;
 import com.inkycode.touka.core.bootstrap.ComponentFactory;
 import com.inkycode.touka.core.bootstrap.Injector;
+import com.inkycode.touka.core.bootstrap.impl.models.ComponentConfiguration;
+import com.inkycode.touka.core.bootstrap.impl.models.ConfigurationProperties;
 
 public class ComponentFactoryImpl implements ComponentFactory {
 
@@ -52,6 +55,7 @@ public class ComponentFactoryImpl implements ComponentFactory {
         putAllConfigurationFilePaths(configurationPath, sortedComponentConfigurationFilePaths);
 
         for (List<Path> componentConfigurationPaths : sortedComponentConfigurationFilePaths.values()) {
+
             for (Path componentConfigurationPath : componentConfigurationPaths) {
                 try {
                     String[] fileNameParts = componentConfigurationPath.getFileName().toString().split(COMPONENT_INSTANCE_NAME_DELIMITER);
@@ -59,7 +63,7 @@ public class ComponentFactoryImpl implements ComponentFactory {
                     String componentInstanceName = (fileNameParts.length == 2 ? fileNameParts[1] : fileNameParts[0]).replaceAll(COMPONENT_CONFIGURATION_FILE_EXTENSION_REGEX, "");
                     Class<?> componentImplementationClass = ClassLoader.getSystemClassLoader().loadClass(componentImplementationClassName);
                     Class<?> componentInterfaceClass = componentImplementationClass.getInterfaces()[0];
-                    
+
                     this.createComponent(componentInstanceName, getComponentProperties(componentConfigurationPath, componentInterfaceClass, componentImplementationClass));
                 } catch (ClassNotFoundException e) {
 
@@ -184,15 +188,8 @@ public class ComponentFactoryImpl implements ComponentFactory {
         componentProperties.put(COMPONENT_PROPERTY_NAME_BOOTSTRAP_INTERFACE_CLASS, componentInterfaceClass);
         componentProperties.put(COMPONENT_PROPERTY_NAME_BOOTSTRAP_IMPLEMENTATION_CLASS, componentImplementationClass);
 
-        JsonReader jsonReader = null;
-        try {
-            Gson gson = new Gson();
-
-            jsonReader = new JsonReader(new FileReader(componentConfigurationPath.toString()));
-
-            componentProperties.putAll(gson.fromJson(jsonReader, ComponentConfigurationImpl.class));
-
-            jsonReader.close();
+        try (JsonReader jsonReader = new JsonReader(new FileReader(componentConfigurationPath.toString()))) {
+            componentProperties.putAll(new Gson().fromJson(jsonReader, ComponentConfiguration.class));
         } catch (IOException e) {
             // Unable to read properties file
         }
@@ -205,33 +202,49 @@ public class ComponentFactoryImpl implements ComponentFactory {
     }
 
     private void putAllConfigurationFilePaths(String basePath, Map<Integer, List<Path>> sortedComponentConfigurationFilePaths, int loadLevel) {
-        try {
-            InputStream inputStream =  ClassLoader.getSystemResourceAsStream(basePath);
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            List<Path> componentConfigurationPaths = new ArrayList<Path>();
-            String resourceName = "";
-            
-            while ((resourceName = bufferedReader.readLine()) != null) {
-                Path resourcePath = Paths.get(basePath, resourceName);
-                Path filePath = Paths.get(ClassLoader.getSystemResource(resourcePath.toString()).toURI());
+        try (InputStream inputStream =  ClassLoader.getSystemResourceAsStream(basePath)) {
+            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
+                List<Path> componentConfigurationPaths = new ArrayList<Path>();
+                String resourceName = "";
+                
+                while ((resourceName = bufferedReader.readLine()) != null) {
+                    Path resourcePath = Paths.get(basePath, resourceName);
+                    Path filePath = Paths.get(ClassLoader.getSystemResource(resourcePath.toString()).toURI());
 
-                if (Files.exists(filePath)) {
-                    if (Files.isDirectory(filePath)) {
-                        putAllConfigurationFilePaths(Paths.get(basePath, resourceName).toString(), sortedComponentConfigurationFilePaths, Integer.valueOf(resourceName));
-                    } else if (Files.isRegularFile(filePath)) {
-                        componentConfigurationPaths.add(filePath);
+                    if (Files.exists(filePath)) {
+                        if (Files.isDirectory(filePath)) {
+                            Path directoryPath = Paths.get(basePath, resourceName);
+                            Path propertiesPath = Paths.get(basePath, resourceName, ".properties.json");
+                            URL propertiesSystemResource = ClassLoader.getSystemResource(propertiesPath.toString());
+
+                            if (propertiesSystemResource != null) {
+                                Path propertiesFilePath = Paths.get(propertiesSystemResource.toURI());
+
+                                if (Files.exists(propertiesFilePath)) {
+                                    ConfigurationProperties configurationProperties = new Gson().fromJson(new FileReader(propertiesFilePath.toString()), ConfigurationProperties.class);
+
+                                    putAllConfigurationFilePaths(directoryPath.toString(), sortedComponentConfigurationFilePaths, configurationProperties.getLoadLevel());
+                                }
+                            } else {
+                                putAllConfigurationFilePaths(directoryPath.toString(), sortedComponentConfigurationFilePaths, loadLevel);
+                            }
+
+                        } else if (!resourceName.startsWith(".") && Files.isRegularFile(filePath)) {
+                            componentConfigurationPaths.add(filePath);
+                        }
+                    } else {
+                        // No such file found
                     }
+                }
+
+                if (sortedComponentConfigurationFilePaths.containsKey(loadLevel)) {
+                    sortedComponentConfigurationFilePaths.get(loadLevel).addAll(componentConfigurationPaths);
                 } else {
-                    // No such file found
+                    sortedComponentConfigurationFilePaths.put(loadLevel, componentConfigurationPaths);
                 }
             }
-
-            bufferedReader.close();
-            inputStream.close();
-
-            sortedComponentConfigurationFilePaths.put(loadLevel, componentConfigurationPaths);
         } catch (IOException | URISyntaxException e) {
-
+            // TODO: Error handling
         }
     }
 
