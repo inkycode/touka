@@ -1,17 +1,18 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0'
+    }
+}
+
+apply plugin: 'com.github.johnrengelman.plugin-shadow'
 apply plugin: 'application'
 
 dependencies {
     compile project(':core')
 }
 
-sourceSets {
-    main {
-        resources {
-            srcDirs += [
-                project(':core').sourceSets.main.resources
-            ]
-        }
-    }
-}
-
-mainClassName = "${project.group}.Touka"
+mainClassName = "shadow.${project.group}.Touka"
