@@ -15,4 +15,9 @@ dependencies {
     compile project(':core')
 }
 
-mainClassName = "shadow.${project.group}.Touka"
+mainClassName = "${project.group}.Touka"
+
+shadowJar {
+    relocate 'com.inkycode', 'com.inkycode'
+    relocate 'org.lwjgl', 'org.lwjgl'
+}

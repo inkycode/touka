@@ -40,8 +40,6 @@ public class BasicApplicationFramework implements Application {
     @Activate
     @Override
     public void start() {
-        this.log.info("Application started");
-
         this.run();
     }
 
@@ -64,26 +62,50 @@ public class BasicApplicationFramework implements Application {
     }
 
     private void startup() {
-        platform.initialise();
+        log.info("Starting application");
 
+        log.info("Initialising platform");
+        platform.initialise();
+        log.info("Platform initialised");
+
+        log.info("Initialising canvas");
         canvas.initialise();
+        log.info("Canvas initialised");
         
+        log.info("Initialising renderer");
         renderer.initialise();
+        log.info("Renderer initialised");
 
         renderer.setViewport(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
         renderer.setClearColor(0, 155, 255);
 
+        log.info("Setting active screen to {}", this.initialScreenName);
         screenManager.setActiveScreen(this.initialScreenName);
+
+        log.info("Application successfully started");
     }
 
     private void shutdown() {
-        screenManager.getActiveScreen().unload();
+        log.info("Shutting down application");
 
+        if (screenManager.getActiveScreen() != null) {
+            log.info("Unloading active screen {}", screenManager.getActiveScreen().getClass().getName());
+            screenManager.getActiveScreen().unload();
+        }
+
+        log.info("Deinitialising renderer");
         renderer.deinitialise();
+        log.info("Renderer deinitialised");
 
+        log.info("Deinitialising canvas");
         canvas.deinitialise();
+        log.info("Canvas deinitialised");
 
+        log.info("Deinitialising platform");
         platform.deinitialise();
+        log.info("Platform deinitialised");
+
+        log.info("Application successfully shutdown");
     }
 
 }

@@ -37,6 +37,7 @@ public class OpenGLShader implements Shader {
 
     @Override
     public void load() {
+        log.info("Loading shader {}, with type {}", this.sourceFilePath, this.shaderType);
         //handle = glCreateShader(getOpenGLShaderType(this.shaderType));
 
         StringBuffer stringBuffer = new StringBuffer();
