@@ -64,7 +64,6 @@ public class GLFWCanvas implements Canvas {
 
             this.monitor = this.monitor == NULL ? glfwGetPrimaryMonitor() : this.monitor;
         } else {
-
             this.width = 1024;
             this.height = 768;
 

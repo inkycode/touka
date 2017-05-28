@@ -22,6 +22,7 @@ public class ComponentImpl implements Component {
 
     public static final String COMPONENT_PROPERTY_NAME_BOOTSTRAP_INTERFACE_CLASS = "bootstrap.interface-class";
     public static final String COMPONENT_PROPERTY_NAME_BOOTSTRAP_IMPLEMENTATION_CLASS = "bootstrap.implementation-class";
+    public static final String COMPONENT_PROPERTY_NAME_BOOTSTRAP_INSTANCE_NAME = "instanceName"; // TODO: Add ability to inject named properties
 
     private final Class<?> interfaceClass;
 

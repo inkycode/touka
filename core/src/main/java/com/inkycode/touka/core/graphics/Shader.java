@@ -1,7 +1,5 @@
 package com.inkycode.touka.core.graphics;
 
-import java.util.concurrent.Callable;
-
 public interface Shader {
 
     public static final int SHADER_TYPE_UNKOWN = 0x00;
@@ -12,6 +10,6 @@ public interface Shader {
 
     void unload();
 
-    void use(Callable<Void> task);
+    boolean isValid();
 
 }

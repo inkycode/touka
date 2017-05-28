@@ -2,13 +2,12 @@ package com.inkycode.touka.core.bootstrap.impl;
 
 import static com.inkycode.touka.core.bootstrap.impl.ComponentImpl.COMPONENT_PROPERTY_NAME_BOOTSTRAP_IMPLEMENTATION_CLASS;
 import static com.inkycode.touka.core.bootstrap.impl.ComponentImpl.COMPONENT_PROPERTY_NAME_BOOTSTRAP_INTERFACE_CLASS;
+import static com.inkycode.touka.core.bootstrap.impl.ComponentImpl.COMPONENT_PROPERTY_NAME_BOOTSTRAP_INSTANCE_NAME;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -20,8 +19,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
-import org.lwjgl.system.CallbackI.V;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
@@ -68,7 +65,7 @@ public class ComponentFactoryImpl implements ComponentFactory {
                     Class<?> componentImplementationClass = getClass().getClassLoader().loadClass(componentImplementationClassName);
                     Class<?> componentInterfaceClass = componentImplementationClass.getInterfaces()[0]; // Assume the first interface is what this component is an instance of
 
-                    this.createComponent(componentInstanceName, getComponentProperties(componentConfigurationPath, componentInterfaceClass, componentImplementationClass));
+                    this.createComponent(componentInstanceName, populateComponentProperties(componentConfigurationPath, componentInterfaceClass, componentImplementationClass, componentInstanceName));
                 } catch (ClassNotFoundException e) {
                     // TODO: Handle class loader errors
                 }
@@ -186,11 +183,12 @@ public class ComponentFactoryImpl implements ComponentFactory {
         return componentInstances;
     }
 
-    private Map<String, Object> getComponentProperties(String componentConfigurationPath, Class<?> componentInterfaceClass, Class<?> componentImplementationClass) {
+    private Map<String, Object> populateComponentProperties(String componentConfigurationPath, Class<?> componentInterfaceClass, Class<?> componentImplementationClass, String componentInstanceName) {
         Map<String, Object> componentProperties = new HashMap<String, Object>();
 
         componentProperties.put(COMPONENT_PROPERTY_NAME_BOOTSTRAP_INTERFACE_CLASS, componentInterfaceClass);
         componentProperties.put(COMPONENT_PROPERTY_NAME_BOOTSTRAP_IMPLEMENTATION_CLASS, componentImplementationClass);
+        componentProperties.put(COMPONENT_PROPERTY_NAME_BOOTSTRAP_INSTANCE_NAME, componentInstanceName);
         
         try (InputStream resourceInputStream = getClass().getClassLoader().getResourceAsStream(componentConfigurationPath)) {
             if (resourceInputStream != null) {
