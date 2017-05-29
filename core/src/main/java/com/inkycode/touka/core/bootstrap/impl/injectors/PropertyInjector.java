@@ -6,6 +6,7 @@ import com.inkycode.touka.core.bootstrap.Component;
 import com.inkycode.touka.core.bootstrap.ComponentFactory;
 import com.inkycode.touka.core.bootstrap.Injector;
 import com.inkycode.touka.core.bootstrap.annotations.Default;
+import com.inkycode.touka.core.bootstrap.annotations.Named;
 
 public class PropertyInjector implements Injector {
 
@@ -14,10 +15,14 @@ public class PropertyInjector implements Injector {
     }
 
     public Object getValue(Field field, Component component, ComponentFactory componentFactory) {
-        Class<?> fieldTypeClass = field.getType();
+        String propertyName = field.getName();
+        if (field.isAnnotationPresent(Named.class)) {
+            propertyName = field.getDeclaredAnnotation(Named.class).value();
+        }
 
-        if (component.getProperties().containsKey(field.getName())) {
-            Object propertyValue = component.getProperties().get(field.getName());
+        Class<?> fieldTypeClass = field.getType();
+        if (component.getProperties().containsKey(propertyName)) {
+            Object propertyValue = component.getProperties().get(propertyName);
             Class<?> propertyClass = propertyValue.getClass();
 
             if (propertyClass == Double.class) {

@@ -1,5 +1,7 @@
 package com.inkycode.touka.core.graphics.impl;
 
+import static com.inkycode.touka.core.bootstrap.impl.ComponentImpl.COMPONENT_PROPERTY_NAME_BOOTSTRAP_INSTANCE_NAME;
+
 import static org.lwjgl.opengl.GL20.glCreateShader;
 import static org.lwjgl.opengl.GL20.glDeleteShader;
 import static org.lwjgl.opengl.GL20.glShaderSource;
@@ -21,6 +23,7 @@ import org.lwjgl.system.MemoryStack;
 import org.slf4j.Logger;
 
 import com.inkycode.touka.core.bootstrap.annotations.Inject;
+import com.inkycode.touka.core.bootstrap.annotations.Named;
 import com.inkycode.touka.core.bootstrap.annotations.Source;
 import com.inkycode.touka.core.graphics.Shader;
 
@@ -42,11 +45,12 @@ public class OpenGLShader implements Shader {
 
     @Inject
     @Source("property")
-    private String instanceName;
+    @Named(COMPONENT_PROPERTY_NAME_BOOTSTRAP_INSTANCE_NAME)
+    private String name;
 
     @Override
     public void load() {
-        log.info("Loading shader {}, with type {}", this.sourceFilePath, this.shaderType);
+        log.info("Loading shader '{}', with type '{}'", this.name, this.shaderType);
 
         StringBuffer stringBuffer = new StringBuffer();
 
@@ -86,18 +90,18 @@ public class OpenGLShader implements Shader {
 
                 log.error("Successfully compiled shader");
             } else {
-                log.error("Unable to find {}", this.sourceFilePath);
+                log.error("Unable to find '{}'", this.sourceFilePath);
             }
         } catch (IOException e) {
             // TODO: Handle error
         }
 
-        log.error("Successfully loaded shader {}", this.instanceName);
+        log.error("Successfully loaded shader '{}'", this.name);
     }
 
     @Override
     public void unload() {
-        log.info("Unloading shader {}", this.instanceName);
+        log.info("Unloading shader '{}'", this.name);
 
         if (this.isValid()) {
             glDeleteShader(this.handle);
@@ -105,7 +109,7 @@ public class OpenGLShader implements Shader {
             this.handle = -1;
         }
 
-        log.error("Successfully unloaded shader {}", this.instanceName);
+        log.error("Successfully unloaded shader '{}'", this.name);
     }
 
     @Override
