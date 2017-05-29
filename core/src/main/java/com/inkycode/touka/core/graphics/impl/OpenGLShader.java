@@ -50,7 +50,7 @@ public class OpenGLShader implements Shader {
 
     @Override
     public void load() {
-        log.info("Loading shader '{}', with type '{}'", this.name, this.shaderType);
+        log.info("'{}': Loading shader, with type '{}'", this.name, this.shaderType);
 
         StringBuffer stringBuffer = new StringBuffer();
 
@@ -67,9 +67,9 @@ public class OpenGLShader implements Shader {
                 } catch (IOException e) {
                     // TODO: Handle error
                 }
-                log.info("Shader source loaded");
+                log.info("'{}': Shader source loaded", this.name);
 
-                log.info("Compiling shader");
+                log.info("'{}': Compiling shader", this.name);
                 this.handle = glCreateShader(getOpenGLShaderType(this.shaderType));
                 glShaderSource(this.handle, stringBuffer.toString());
                 glCompileShader(this.handle);
@@ -80,7 +80,7 @@ public class OpenGLShader implements Shader {
                     glGetShaderiv(this.handle, GL_COMPILE_STATUS, compileStatus);
                     if (compileStatus.get(0) <= 0) {
                         // TODO: Handle compile error
-                        log.error("Failed to compile shader");
+                        log.error("'{}': Failed to compile shader", this.name);
 
                         this.unload();
 
@@ -88,20 +88,20 @@ public class OpenGLShader implements Shader {
                     }
                 }
 
-                log.error("Successfully compiled shader");
+                log.error("'{}': Successfully compiled shader", this.name);
             } else {
-                log.error("Unable to find '{}'", this.sourceFilePath);
+                log.error("'{}': Unable to find '{}'", this.name, this.sourceFilePath);
             }
         } catch (IOException e) {
             // TODO: Handle error
         }
 
-        log.error("Successfully loaded shader '{}'", this.name);
+        log.error("'{}': Successfully loaded shader", this.name);
     }
 
     @Override
     public void unload() {
-        log.info("Unloading shader '{}'", this.name);
+        log.info("'{}': Unloading shader", this.name);
 
         if (this.isValid()) {
             glDeleteShader(this.handle);
@@ -109,7 +109,7 @@ public class OpenGLShader implements Shader {
             this.handle = -1;
         }
 
-        log.error("Successfully unloaded shader '{}'", this.name);
+        log.info("'{}': Successfully unloaded shader", this.name);
     }
 
     @Override
