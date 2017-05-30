@@ -1,7 +1,7 @@
 #version 450
 
-out vec4 colorOut;
+out vec4 fragmentColor;
 
 void main() {
-    colorOut = vec4(1.0, 0.0, 0.0, 1.0);
+    fragmentColor = vec4(1.0, 0.0, 0.0, 1.0);
 }

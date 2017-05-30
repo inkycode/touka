@@ -1,4 +1,4 @@
-package com.inkycode.touka.core.graphics.impl;
+package com.inkycode.touka.core.graphics.opengl;
 
 import static com.inkycode.touka.core.bootstrap.impl.ComponentImpl.COMPONENT_PROPERTY_NAME_BOOTSTRAP_INSTANCE_NAME;
 

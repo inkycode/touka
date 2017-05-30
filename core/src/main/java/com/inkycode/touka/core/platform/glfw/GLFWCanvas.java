@@ -1,4 +1,4 @@
-package com.inkycode.touka.core.platform.impl;
+package com.inkycode.touka.core.platform.glfw;
 
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
 import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
