@@ -99,7 +99,7 @@ public class ComponentImpl implements Component {
     public void activate() {
         try {
             for (final Method method : this.getImplementationClass().getDeclaredMethods()) {
-                if (method.isAnnotationPresent(Activate.class)) {
+                if (this.state == COMPONENT_STATE_CREATED && method.isAnnotationPresent(Activate.class)) {
                     method.invoke(this.getInstance(), COMPONENT_EMPTY_ARGUMENTS);
 
                     this.state = COMPONENT_STATE_ACTIVE;
