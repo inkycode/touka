@@ -24,13 +24,19 @@ public class ComponentInjector implements Injector {
                 Map<String, Object> componentInstanceMap = new HashMap<String, Object>();
 
                 for (Component componentToInject : componentFactory.getComponents(componentInterface)) {
+                    componentToInject.activate();
+
                     componentInstanceMap.put(componentToInject.getInstanceName(), componentToInject.getInstance());
                 }
 
                 return componentInstanceMap;
             }
         } else {
-            return componentFactory.getComponent(field.getType()).getInstance();
+            Component componentToInject = componentFactory.getComponent(field.getType());
+            
+            componentToInject.activate();
+
+            return componentToInject.getInstance();
         }
 
         return null;
