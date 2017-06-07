@@ -5,41 +5,52 @@ import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.inkycode.touka.core.bootstrap.Component;
 import com.inkycode.touka.core.bootstrap.ComponentFactory;
 import com.inkycode.touka.core.bootstrap.Injector;
 
 public class ComponentInjector implements Injector {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ComponentInjector.class);
+
     public String getName() {
         return "component";
     }
 
     public Object getValue(Field field, Component component, ComponentFactory componentFactory) {
-        if (Map.class.isAssignableFrom(field.getType())) {
-            if (field.getGenericType() instanceof ParameterizedType) {
-                ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
-                Class<?> componentInterface = (Class<?>) parameterizedType.getActualTypeArguments()[1];
+        LOG.info("Getting value for component injector");
 
-                Map<String, Object> componentInstanceMap = new HashMap<String, Object>();
+        if (Map.class.isAssignableFrom(field.getType()) && field.getGenericType() instanceof ParameterizedType) {
+            LOG.info("Target field '{}' is Map assignable", field.getName());
 
-                for (Component componentToInject : componentFactory.getComponents(componentInterface)) {
-                    componentToInject.activate();
+            ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
+            Class<?> componentInterface = (Class<?>) parameterizedType.getActualTypeArguments()[1];
+            Map<String, Object> componentInstanceMap = new HashMap<String, Object>();
 
-                    componentInstanceMap.put(componentToInject.getInstanceName(), componentToInject.getInstance());
-                }
+            for (Component componentToInject : componentFactory.getComponents(componentInterface)) {
+                componentToInject.activate();
 
-                return componentInstanceMap;
+                LOG.info("Putting component instance '{}' into map", componentToInject.getInstanceName());
+                componentInstanceMap.put(componentToInject.getInstanceName(), componentToInject.getInstance());
             }
+
+            LOG.info("Returning map value to target field '{}'", field.getName());
+            return componentInstanceMap;
         } else {
             Component componentToInject = componentFactory.getComponent(field.getType());
-            
-            componentToInject.activate();
 
-            return componentToInject.getInstance();
+            if (componentToInject != null) {
+                componentToInject.activate();
+
+                LOG.info("Returning component value to target field '{}'", field.getName());
+                return componentToInject.getInstance();
+            }
+
+            return null;
         }
-
-        return null;
     }
 
 }
