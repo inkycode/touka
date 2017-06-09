@@ -8,6 +8,7 @@ import java.util.Map;
 import com.inkycode.touka.core.bootstrap.Component;
 import com.inkycode.touka.core.bootstrap.ComponentFactory;
 import com.inkycode.touka.core.bootstrap.Injector;
+import com.inkycode.touka.core.bootstrap.annotations.Named;
 
 public class ComponentInjector implements Injector {
 
@@ -32,7 +33,16 @@ public class ComponentInjector implements Injector {
                 return componentInstanceMap;
             }
         } else {
-            Component componentToInject = componentFactory.getComponent(field.getType());
+            Component componentToInject = null;
+            String instanceName = field.getName();
+
+            if (field.isAnnotationPresent(Named.class)) {
+                instanceName = field.getDeclaredAnnotation(Named.class).value();
+
+                componentToInject = componentFactory.getComponent(field.getType(), instanceName);
+            } else {
+                componentToInject = componentFactory.getComponent(field.getType());
+            }
             
             componentToInject.activate();
 
