@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 
 import com.inkycode.touka.core.application.Screen;
 import com.inkycode.touka.core.bootstrap.annotations.Inject;
+import com.inkycode.touka.core.bootstrap.annotations.Named;
 import com.inkycode.touka.core.bootstrap.annotations.Source;
 import com.inkycode.touka.core.graphics.Mesh;
 import com.inkycode.touka.core.graphics.MeshFactory;
@@ -32,7 +33,8 @@ public class MainScreen implements Screen {
 
     @Inject
     @Source("component")
-    private Map<String, ShaderProgram> shaderPrograms;
+    @Named("basic")
+    private ShaderProgram basicShader;
 
     @Inject
     @Source("component")
@@ -68,20 +70,20 @@ public class MainScreen implements Screen {
 
         this.mesh = meshFactory.build();
 
-        this.shaderPrograms.get("basic").load();
+        this.basicShader.load();
 
         this.renderer.setViewport(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
     }
 
     public void unload() {
-        this.shaderPrograms.get("basic").unload();
+        this.basicShader.unload();
 
         this.mesh.destroy();
     }
 
     @Override
     public void render() {
-        this.shaderPrograms.get("basic").use(new Callable<Void>() {
+        this.basicShader.use(new Callable<Void>() {
 
             @Override
             public Void call() {
