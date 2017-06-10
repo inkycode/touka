@@ -12,6 +12,7 @@ import com.inkycode.touka.core.bootstrap.Component;
 import com.inkycode.touka.core.bootstrap.ComponentFactory;
 import com.inkycode.touka.core.bootstrap.Injector;
 import com.inkycode.touka.core.bootstrap.annotations.Named;
+import com.inkycode.touka.core.bootstrap.annotations.Via;
 
 public class ComponentInjector implements Injector {
 
@@ -44,14 +45,38 @@ public class ComponentInjector implements Injector {
             Component componentToInject = null;
 
             LOG.info("Checking for named annotation", field.getName());
-            String instanceName = field.getName();
+            String name = field.getName();
             if (field.isAnnotationPresent(Named.class)) {
-                instanceName = field.getDeclaredAnnotation(Named.class).value();
+                name = field.getDeclaredAnnotation(Named.class).value();
 
-                LOG.info("Named annotation present, obtaining component instance with name '{}'", instanceName);
-                componentToInject = componentFactory.getComponent(field.getType(), instanceName);
+                LOG.info("Checking for via annotation", field.getName());
+                if (field.isAnnotationPresent(Via.class)) {
+                    String via = field.getDeclaredAnnotation(Via.class).value();
+
+                    LOG.info("Via annotation present, checking for via source");
+                    if ("property".equals(via)) {
+                        name = (String) component.getProperties().get(name);
+
+                        LOG.info("Via source is property, using property value for name");
+                    }
+                } else {
+
+                }
+
+                LOG.info("Named annotation present, obtaining component instance with name '{}'", name);
+                componentToInject = componentFactory.getComponent(field.getType(), name);
+
+                if (componentToInject == null) {
+                    try {
+                        Class<?> implementationClass = Class.forName(name);
+
+                        componentToInject = componentFactory.getComponent(field.getType(), implementationClass);
+                    } catch (ClassNotFoundException e) {
+                        // TODO: Handle error
+                    }
+                }
             } else {
-                LOG.info("No named annotation present, obtaining default component instance", instanceName);
+                LOG.info("No named annotation present, obtaining default component instance", name);
                 componentToInject = componentFactory.getComponent(field.getType());
             }
 
@@ -61,9 +86,10 @@ public class ComponentInjector implements Injector {
                 LOG.info("Returning component value to target field '{}'", field.getName());
                 return componentToInject.getInstance();
             }
-
-            return null;
         }
+
+        LOG.warn("Unable to return non-null value for '{}'", field.getName());
+        return null;
     }
 
 }

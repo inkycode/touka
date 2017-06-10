@@ -21,6 +21,8 @@ public interface ComponentFactory {
 
     Component getComponent(Class<?> interfaceClass, String instanceName);
 
+    Component getComponent(Class<?> interfaceClass, Class<?> implementationClass);
+
     List<Component> getComponents();
 
     List<Component> getComponents(Class<?> interfaceClass);

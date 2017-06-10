@@ -153,6 +153,26 @@ public class ComponentFactoryImpl implements ComponentFactory {
     }
 
     @Override
+    public Component getComponent(final Class<?> interfaceClass, Class<?> implementationClass) {
+        if (this.components.containsKey(interfaceClass)) {
+            if (!this.components.get(interfaceClass).isEmpty()) {
+                return this.components.get(interfaceClass)
+                    .get(implementationClass)
+                        .values()
+                        .stream()
+                        .findFirst()
+                        .get();
+            } else {
+                // No component for given implementation class found
+            }
+        } else {
+            // No component for given interface class found
+        }
+
+        return null;
+    }
+
+    @Override
     public List<Component> getComponents() {
         final List<Component> components = new ArrayList<Component>();
 
