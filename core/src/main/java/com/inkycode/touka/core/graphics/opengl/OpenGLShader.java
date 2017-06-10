@@ -88,7 +88,7 @@ public class OpenGLShader implements Shader {
                     }
                 }
 
-                log.error("'{}': Successfully compiled shader", this.name);
+                log.info("'{}': Successfully compiled shader", this.name);
             } else {
                 log.error("'{}': Unable to find '{}'", this.name, this.sourceFilePath);
             }
@@ -96,7 +96,7 @@ public class OpenGLShader implements Shader {
             // TODO: Handle error
         }
 
-        log.error("'{}': Successfully loaded shader", this.name);
+        log.info("'{}': Successfully loaded shader", this.name);
     }
 
     @Override
