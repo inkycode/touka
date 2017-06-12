@@ -100,6 +100,7 @@ public class ComponentInjector implements Injector {
                 componentToInject = componentFactory.getComponent(field.getType(), name);
 
                 if (componentToInject == null) {
+                    LOG.info("Unable to inject using instance name, trying class name '{}'", name);
                     try {
                         final Class<?> implementationClass = Class.forName(name);
 

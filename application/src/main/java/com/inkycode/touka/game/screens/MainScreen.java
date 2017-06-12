@@ -39,6 +39,7 @@ public class MainScreen implements Screen {
 
     @Inject
     @Source("component")
+    @Named("position3")
     private MeshFactory meshFactory;
 
     private Mesh mesh;

@@ -1,13 +1,8 @@
 package com.inkycode.touka.core.graphics.impl.vertex;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
-import org.joml.Vector3f;
 
 import com.inkycode.touka.core.bootstrap.annotations.Activate;
 import com.inkycode.touka.core.bootstrap.annotations.Inject;
@@ -18,13 +13,9 @@ import com.inkycode.touka.core.graphics.Vertex;
 import com.inkycode.touka.core.graphics.VertexAttributeDescriptor;
 import com.inkycode.touka.core.graphics.VertexFactory;
 
-public class Position3VertexFactory implements VertexFactory {
+public class VertexFactoryImpl implements VertexFactory {
 
-    // @Inject
-    // @Source("component")
-    // private Map<String, VertexAttributeDescriptor> vertexAttributeDescriptorPool;
-
-    private Map<Integer, Object> attributes;
+    private Map<Integer, Object> vertexAttributes;
 
     @Inject
     @Source("component")
@@ -32,32 +23,46 @@ public class Position3VertexFactory implements VertexFactory {
     @Named("vertexAttributeDescriptors")
     private Set<VertexAttributeDescriptor> vertexAttributeDescriptors;
 
+    @Inject
+    @Source("property")
+    private String vertexClazz;
+
+    @Inject
+    @Source("property")
+    private int vertexSize;
+
     @Activate
     public void activate() {
-        this.attributes = new TreeMap<Integer, Object>();
-
-        // this.vertexAttributeDescriptors = new HashSet<VertexAttributeDescriptor>();
-        // vertexAttributeDescriptors.add(vertexAttributeDescriptorPool.get("position3"));
+        this.vertexAttributes = new TreeMap<Integer, Object>();
     }
 
     @Override
     public <T> void setAttribute(final int position, final T value, final Class<T> type) {
-        this.attributes.put(position, value);
+        this.vertexAttributes.put(position, value);
     }
 
     @Override
     public Vertex build() {
-        return new Position3Vertex(this.getAttribute(0, Vector3f.class));
+        
+        try {
+            final Class<? extends Vertex> vertexClazz = Class.forName(this.vertexClazz).asSubclass(Vertex.class);
+
+            return vertexClazz.getDeclaredConstructor(Map.class).newInstance(this.vertexAttributes);
+        } catch (ReflectiveOperationException e) {
+            // TODO: Handle errors
+        }
+
+        return null;
     }
 
     @Override
     public <T> T getAttribute(final int position, final Class<T> type) {
-        return type.cast(this.attributes.get(position));
+        return type.cast(this.vertexAttributes.get(position));
     }
 
     @Override
     public int getVertexSize() {
-        return 3;
+        return this.vertexSize;
     }
 
     @Override
