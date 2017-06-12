@@ -1,4 +1,4 @@
-package com.inkycode.touka.core.graphics.opengl;
+package com.inkycode.touka.core.graphics.impl.opengl;
 
 import static org.lwjgl.opengl.GL15.glGenBuffers;
 import static org.lwjgl.opengl.GL15.glDeleteBuffers;

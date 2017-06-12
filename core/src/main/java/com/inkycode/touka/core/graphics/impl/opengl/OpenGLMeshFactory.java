@@ -1,4 +1,4 @@
-package com.inkycode.touka.core.graphics.opengl;
+package com.inkycode.touka.core.graphics.impl.opengl;
 
 import java.util.ArrayList;
 import java.util.List;

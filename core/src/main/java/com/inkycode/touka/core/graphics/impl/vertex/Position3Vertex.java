@@ -1,4 +1,4 @@
-package com.inkycode.touka.core.graphics.vertex;
+package com.inkycode.touka.core.graphics.impl.vertex;
 
 import com.inkycode.touka.core.graphics.Vertex;
 

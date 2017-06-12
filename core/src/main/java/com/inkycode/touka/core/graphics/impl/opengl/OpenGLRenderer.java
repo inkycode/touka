@@ -1,4 +1,4 @@
-package com.inkycode.touka.core.graphics.opengl;
+package com.inkycode.touka.core.graphics.impl.opengl;
 
 import static org.lwjgl.opengl.GL.createCapabilities;
 import static org.lwjgl.opengl.GL11.glClear;

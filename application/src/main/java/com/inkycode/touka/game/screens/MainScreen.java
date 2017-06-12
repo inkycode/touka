@@ -14,7 +14,7 @@ import com.inkycode.touka.core.graphics.Mesh;
 import com.inkycode.touka.core.graphics.MeshFactory;
 import com.inkycode.touka.core.graphics.Renderer;
 import com.inkycode.touka.core.graphics.ShaderProgram;
-import com.inkycode.touka.core.graphics.vertex.Position3Vertex;
+import com.inkycode.touka.core.graphics.impl.vertex.Position3Vertex;
 import com.inkycode.touka.core.platform.Canvas;
 
 public class MainScreen implements Screen {

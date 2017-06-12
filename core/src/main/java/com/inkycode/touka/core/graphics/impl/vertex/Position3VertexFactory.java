@@ -1,4 +1,4 @@
-package com.inkycode.touka.core.graphics.vertex;
+package com.inkycode.touka.core.graphics.impl.vertex;
 
 import java.util.Map;
 import java.util.TreeMap;

@@ -1,4 +1,4 @@
-package com.inkycode.touka.core.graphics.polygon;
+package com.inkycode.touka.core.graphics.impl.polygon;
 
 import java.util.ArrayList;
 import java.util.List;
