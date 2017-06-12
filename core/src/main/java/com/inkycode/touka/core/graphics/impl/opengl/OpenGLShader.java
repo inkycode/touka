@@ -29,8 +29,6 @@ import com.inkycode.touka.core.graphics.Shader;
 
 public class OpenGLShader implements Shader {
 
-    private int handle;
-
     @Inject
     @Source("logger")
     private Logger log;
@@ -48,16 +46,18 @@ public class OpenGLShader implements Shader {
     @Named(COMPONENT_PROPERTY_NAME_BOOTSTRAP_INSTANCE_NAME)
     private String name;
 
+    private int handle;
+
     @Override
     public void load() {
         log.info("'{}': Loading shader, with type '{}'", this.name, this.shaderType);
 
-        StringBuffer stringBuffer = new StringBuffer();
+        final StringBuffer stringBuffer = new StringBuffer();
 
-        try (InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(sourceFilePath)) {
+        try (final InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(sourceFilePath)) {
             if (inputStream != null) {
-                try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8")) {
-                    try (BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
+                try (final InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8")) {
+                    try (final BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
                         String line = "";
 
                         while ((line = bufferedReader.readLine()) != null) {
@@ -74,8 +74,8 @@ public class OpenGLShader implements Shader {
                 glShaderSource(this.handle, stringBuffer.toString());
                 glCompileShader(this.handle);
 
-                try (MemoryStack stack = stackPush()) {
-                    IntBuffer compileStatus = stack.mallocInt(1);
+                try (final MemoryStack stack = stackPush()) {
+                    final IntBuffer compileStatus = stack.mallocInt(1);
 
                     glGetShaderiv(this.handle, GL_COMPILE_STATUS, compileStatus);
                     if (compileStatus.get(0) <= 0) {
@@ -121,7 +121,7 @@ public class OpenGLShader implements Shader {
         return this.handle;
     }
 
-    private int getOpenGLShaderType(int type) {
+    private int getOpenGLShaderType(final int type) {
         if (type == SHADER_TYPE_VERTEX) {
             return GL_VERTEX_SHADER;
         } else if (type == SHADER_TYPE_FRAGMENT) {

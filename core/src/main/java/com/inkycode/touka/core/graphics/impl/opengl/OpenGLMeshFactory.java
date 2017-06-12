@@ -42,12 +42,12 @@ public class OpenGLMeshFactory implements MeshFactory {
     }
 
     @Override
-    public void addVertex(Vertex vertex) {
+    public void addVertex(final Vertex vertex) {
         this.vertices.add(vertex);
     }
 
     @Override
-    public void addPolygon(Polygon polygon) {
+    public void addPolygon(final Polygon polygon) {
         this.polygons.add(polygon);
     }
 

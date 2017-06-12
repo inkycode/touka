@@ -31,10 +31,6 @@ import com.inkycode.touka.core.graphics.ShaderProgram;
 
 public class OpenGLShaderProgram implements ShaderProgram {
 
-    private int handle;
-
-    private Collection<Shader> shaders;
-
     @Inject
     @Source("logger")
     private Logger log;
@@ -52,6 +48,10 @@ public class OpenGLShaderProgram implements ShaderProgram {
     @Named(COMPONENT_PROPERTY_NAME_BOOTSTRAP_INSTANCE_NAME)
     private String name;
 
+    private int handle;
+
+    private Collection<Shader> shaders;
+
     @Override
     public void load() {
         log.info("'{}': Loading shader program", this.name);
@@ -67,7 +67,7 @@ public class OpenGLShaderProgram implements ShaderProgram {
         
         log.info("'{}': Loading shaders, if required, and attaching shaders to shader program", this.name);
         this.handle = glCreateProgram();
-        for (Shader shader : this.shaders) {
+        for (final Shader shader : this.shaders) {
             if (!shader.isValid()) {
                 shader.load();
             }
@@ -77,8 +77,8 @@ public class OpenGLShaderProgram implements ShaderProgram {
 
         log.info("'{}': Linking program", this.name);
         glLinkProgram(this.handle);
-        try (MemoryStack stack = stackPush()) {
-            IntBuffer linkStatus = stack.mallocInt(1);
+        try (final MemoryStack stack = stackPush()) {
+            final IntBuffer linkStatus = stack.mallocInt(1);
 
             glGetProgramiv(this.handle, GL_LINK_STATUS, linkStatus);
             if (linkStatus.get(0) <= 0) {
@@ -104,7 +104,7 @@ public class OpenGLShaderProgram implements ShaderProgram {
             glDeleteProgram(this.handle);
         }
 
-        for (Shader shader : this.shaders) {
+        for (final Shader shader : this.shaders) {
             shader.unload();
         }
 
@@ -112,7 +112,7 @@ public class OpenGLShaderProgram implements ShaderProgram {
     }
 
     @Override
-    public void use(Callable<Void> task) {
+    public void use(final Callable<Void> task) {
         glUseProgram(this.handle);
 
         try {

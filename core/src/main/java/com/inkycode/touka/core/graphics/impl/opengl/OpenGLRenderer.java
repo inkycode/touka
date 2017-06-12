@@ -27,12 +27,12 @@ public class OpenGLRenderer implements Renderer {
     }
 
     @Override
-    public void setClearColor(int red, int green, int blue) {
+    public void setClearColor(final int red, final int green, final int blue) {
         glClearColor(red / 255f, green / 255f, blue / 255f, 1.0f);
     }
 
     @Override
-    public void setViewport(int x, int y, int width, int height) {
+    public void setViewport(final int x, final int y, final int width, final int height) {
         glViewport(x, y, width, height);
     }
 

@@ -18,7 +18,7 @@ public class Position3VertexFactory implements VertexFactory {
         this.attributes = new TreeMap<Integer, Object>();
     }
 
-    public <T> void setAttribute(int position, T value, Class<T> type) {
+    public <T> void setAttribute(final int position, final T value, final Class<T> type) {
         this.attributes.put(position, value);
     }
 
@@ -26,7 +26,7 @@ public class Position3VertexFactory implements VertexFactory {
         return new Position3Vertex(this.getAttribute(0, Vector3f.class));
     }
 
-    public <T> T getAttribute(int position, Class<T> type) {
+    public <T> T getAttribute(final int position, final Class<T> type) {
         return type.cast(this.attributes.get(position));
     }
 

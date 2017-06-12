@@ -6,14 +6,14 @@ import org.joml.Vector3f;
 
 public class Position3Vertex implements Vertex {
 
-    private Vector3f position;
+    final private Vector3f position;
 
-    public Position3Vertex(Vector3f position) {
+    public Position3Vertex(final Vector3f position) {
         this.position = position;
     }
 
     @Override
-    public float get(int index) {
+    public float get(final int index) {
         return position.get(index);
     }
 

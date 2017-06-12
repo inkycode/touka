@@ -8,7 +8,7 @@ public interface ShaderProgram {
 
     void unload();
 
-    void use(Callable<Void> task);
+    void use(final Callable<Void> task);
 
     boolean isValid();
 

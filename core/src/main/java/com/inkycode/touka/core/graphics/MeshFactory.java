@@ -2,9 +2,9 @@ package com.inkycode.touka.core.graphics;
 
 public interface MeshFactory {
 
-    void addVertex(Vertex vertex);
+    void addVertex(final Vertex vertex);
 
-    void addPolygon(Polygon polygon);
+    void addPolygon(final Polygon polygon);
 
     Mesh build();
 

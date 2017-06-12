@@ -2,9 +2,9 @@ package com.inkycode.touka.core.graphics;
 
 public interface VertexFactory {
 
-    <T> void setAttribute(int position, T value, Class<T> type);
+    <T> void setAttribute(final int position, final T value, final Class<T> type);
 
-    <T> T getAttribute(int position, Class<T> type);
+    <T> T getAttribute(final int position, final Class<T> type);
 
     Vertex build();
 

@@ -28,14 +28,14 @@ import com.inkycode.touka.core.graphics.Vertex;
 
 public class OpenGLMesh implements Mesh {
 
-    private int vboHandle, vaoHandle;
+    private final int vboHandle, vaoHandle;
 
-    private int vertexCount;
+    private final int vertexCount;
 
-    public OpenGLMesh(List<Vertex> vertices, List<Polygon> polygons) {
+    public OpenGLMesh(final List<Vertex> vertices, final List<Polygon> polygons) {
         // TODO: Index buffers?
         try (MemoryStack stack = stackPush()) {
-            FloatBuffer vertexBuffer = stack.mallocFloat(vertices.size() * 3);
+            final FloatBuffer vertexBuffer = stack.mallocFloat(vertices.size() * 3);
             
             for (Vertex vertex : vertices) {
                 vertexBuffer.put(vertex.get(0));

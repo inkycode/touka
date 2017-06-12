@@ -7,9 +7,9 @@ import com.inkycode.touka.core.graphics.Polygon;
 
 public class Triangle implements Polygon {
 
-    private List<Integer> indices;
+    final private List<Integer> indices;
 
-    public Triangle(int index0, int index1, int index2) {
+    public Triangle(final int index0, final int index1, final int index2) {
         this.indices = new ArrayList<Integer>();
 
         this.indices.add(index0);
