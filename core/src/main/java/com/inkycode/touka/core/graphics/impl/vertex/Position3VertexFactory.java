@@ -11,27 +11,33 @@ import org.joml.Vector3f;
 
 import com.inkycode.touka.core.bootstrap.annotations.Activate;
 import com.inkycode.touka.core.bootstrap.annotations.Inject;
+import com.inkycode.touka.core.bootstrap.annotations.Named;
 import com.inkycode.touka.core.bootstrap.annotations.Source;
+import com.inkycode.touka.core.bootstrap.annotations.Via;
 import com.inkycode.touka.core.graphics.Vertex;
 import com.inkycode.touka.core.graphics.VertexAttributeDescriptor;
 import com.inkycode.touka.core.graphics.VertexFactory;
 
 public class Position3VertexFactory implements VertexFactory {
 
-    @Inject
-    @Source("component")
-    private Map<String, VertexAttributeDescriptor> vertexAttributeDescriptorPool;
+    // @Inject
+    // @Source("component")
+    // private Map<String, VertexAttributeDescriptor> vertexAttributeDescriptorPool;
 
     private Map<Integer, Object> attributes;
 
+    @Inject
+    @Source("component")
+    @Via("property")
+    @Named("vertexAttributeDescriptors")
     private Set<VertexAttributeDescriptor> vertexAttributeDescriptors;
 
     @Activate
     public void activate() {
         this.attributes = new TreeMap<Integer, Object>();
 
-        this.vertexAttributeDescriptors = new HashSet<VertexAttributeDescriptor>();
-        vertexAttributeDescriptors.add(vertexAttributeDescriptorPool.get("position3"));
+        // this.vertexAttributeDescriptors = new HashSet<VertexAttributeDescriptor>();
+        // vertexAttributeDescriptors.add(vertexAttributeDescriptorPool.get("position3"));
     }
 
     @Override

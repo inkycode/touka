@@ -3,7 +3,10 @@ package com.inkycode.touka.core.bootstrap.impl.injectors;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +44,38 @@ public class ComponentInjector implements Injector {
 
             LOG.info("Returning map value to target field '{}'", field.getName());
             return componentInstanceMap;
+        } else if (Set.class.isAssignableFrom(field.getType()) && field.getGenericType() instanceof ParameterizedType) {
+            LOG.info("Target field '{}' is Set assignable", field.getName());
+
+            final ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
+            final Class<?> componentInterface = (Class<?>) parameterizedType.getActualTypeArguments()[0];
+            final Set<Object> componentInstanceSet = new LinkedHashSet<Object>();
+
+            LOG.info("Checking for via and named annotation", field.getName());
+            if (field.isAnnotationPresent(Via.class) && field.isAnnotationPresent(Named.class)) {
+                final String via = field.getDeclaredAnnotation(Via.class).value();
+                final String propertyName = field.getDeclaredAnnotation(Named.class).value();
+
+                LOG.info("Via and named annotation present, checking for via source");
+                if ("property".equals(via)) {
+                    final List<String> names = (List<String>) component.getProperties().get(propertyName);
+
+                    LOG.info("Via source is property, using property value for name");
+
+                    for (final String name : names) {
+                        final Component componentToInject = componentFactory.getComponent(componentInterface, name);
+
+                        if (componentToInject != null) {
+                            componentToInject.activate();
+
+                            LOG.info("Adding component instance '{}' to set", componentToInject.getInstanceName());
+                            componentInstanceSet.add(componentToInject.getInstance());
+                        }
+                    }
+                }
+            }
+
+            return componentInstanceSet;
         } else {
             Component componentToInject = null;
 
@@ -59,8 +94,6 @@ public class ComponentInjector implements Injector {
 
                         LOG.info("Via source is property, using property value for name");
                     }
-                } else {
-
                 }
 
                 LOG.info("Named annotation present, obtaining component instance with name '{}'", name);
