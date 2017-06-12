@@ -37,7 +37,7 @@ public class VertexFactoryImpl implements VertexFactory {
     }
 
     @Override
-    public <T> void setAttribute(final int position, final T value, final Class<T> type) {
+    public <T> void setAttribute(final int position, final T value) {
         this.vertexAttributes.put(position, value);
     }
 

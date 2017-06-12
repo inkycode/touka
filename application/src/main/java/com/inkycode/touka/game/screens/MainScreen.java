@@ -62,19 +62,13 @@ public class MainScreen implements Screen {
                 float xPos5 = ((x + 1) / (float) maxXSections), yPos5 = ((y + 1) / (float) maxYSections), zPos5 = 0.0f;
                 float xPos6 = ((x + 0) / (float) maxXSections), yPos6 = ((y + 1) / (float) maxYSections), zPos6 = 0.0f;
 
-                vertexFactory.setAttribute(0, new Vector3f(xPos1, yPos1, zPos1), Vector3f.class); meshFactory.addVertex(vertexFactory.build());
-                vertexFactory.setAttribute(0, new Vector3f(xPos2, yPos2, zPos2), Vector3f.class); meshFactory.addVertex(vertexFactory.build());
-                vertexFactory.setAttribute(0, new Vector3f(xPos3, yPos3, zPos3), Vector3f.class); meshFactory.addVertex(vertexFactory.build());
+                vertexFactory.setAttribute(0, new Vector3f(xPos1, yPos1, zPos1)); meshFactory.addVertex(vertexFactory.build());
+                vertexFactory.setAttribute(0, new Vector3f(xPos2, yPos2, zPos2)); meshFactory.addVertex(vertexFactory.build());
+                vertexFactory.setAttribute(0, new Vector3f(xPos3, yPos3, zPos3)); meshFactory.addVertex(vertexFactory.build());
 
-                vertexFactory.setAttribute(0, new Vector3f(xPos4, yPos4, zPos4), Vector3f.class); meshFactory.addVertex(vertexFactory.build());
-                vertexFactory.setAttribute(0, new Vector3f(xPos5, yPos5, zPos5), Vector3f.class); meshFactory.addVertex(vertexFactory.build());
-                vertexFactory.setAttribute(0, new Vector3f(xPos6, yPos6, zPos6), Vector3f.class); meshFactory.addVertex(vertexFactory.build());
-                // meshFactory.addVertex(new Position3Vertex(new Vector3f(xPos2, yPos2, zPos2)));
-                // meshFactory.addVertex(new Position3Vertex(new Vector3f(xPos3, yPos3, zPos3)));
-                
-                // meshFactory.addVertex(new Position3Vertex(new Vector3f(xPos4, yPos4, zPos4)));
-                // meshFactory.addVertex(new Position3Vertex(new Vector3f(xPos5, yPos5, zPos5)));
-                // meshFactory.addVertex(new Position3Vertex(new Vector3f(xPos6, yPos6, zPos6)));
+                vertexFactory.setAttribute(0, new Vector3f(xPos4, yPos4, zPos4)); meshFactory.addVertex(vertexFactory.build());
+                vertexFactory.setAttribute(0, new Vector3f(xPos5, yPos5, zPos5)); meshFactory.addVertex(vertexFactory.build());
+                vertexFactory.setAttribute(0, new Vector3f(xPos6, yPos6, zPos6)); meshFactory.addVertex(vertexFactory.build());
             }
         }
 
