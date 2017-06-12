@@ -6,6 +6,8 @@ public interface MeshFactory {
 
     void addPolygon(final Polygon polygon);
 
+    VertexFactory getVertexFactory();
+
     Mesh build();
 
 }

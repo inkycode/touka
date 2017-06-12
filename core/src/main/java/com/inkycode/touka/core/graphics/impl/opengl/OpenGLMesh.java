@@ -25,6 +25,8 @@ import org.lwjgl.system.MemoryStack;
 import com.inkycode.touka.core.graphics.Mesh;
 import com.inkycode.touka.core.graphics.Polygon;
 import com.inkycode.touka.core.graphics.Vertex;
+import com.inkycode.touka.core.graphics.VertexAttributeDescriptor;
+import com.inkycode.touka.core.graphics.VertexFactory;
 
 public class OpenGLMesh implements Mesh {
 
@@ -32,15 +34,18 @@ public class OpenGLMesh implements Mesh {
 
     private final int vertexCount;
 
-    public OpenGLMesh(final List<Vertex> vertices, final List<Polygon> polygons) {
+    public OpenGLMesh(final List<Vertex> vertices, final List<Polygon> polygons, final VertexFactory vertexFactory) {
         // TODO: Index buffers?
         try (MemoryStack stack = stackPush()) {
-            final FloatBuffer vertexBuffer = stack.mallocFloat(vertices.size() * 3);
+            final FloatBuffer vertexBuffer = stack.mallocFloat(vertices.size() * vertexFactory.getVertexSize());
             
-            for (Vertex vertex : vertices) {
-                vertexBuffer.put(vertex.get(0));
-                vertexBuffer.put(vertex.get(1));
-                vertexBuffer.put(vertex.get(2));
+            for (final Vertex vertex : vertices) {
+                for (final VertexAttributeDescriptor vertexAttributeDescriptor : vertexFactory.getVertexAttributeDescriptors()) {
+                    final int offset = vertexAttributeDescriptor.getOffset();
+                    for (int index = 0; index < vertexAttributeDescriptor.getSize(); index ++) {
+                        vertexBuffer.put(vertex.get(offset + index));
+                    }
+                }
             }
             vertexBuffer.flip();
 
@@ -55,8 +60,10 @@ public class OpenGLMesh implements Mesh {
 
             // TODO: How should this be handled? Maybe all this stuff should just go inside the
             // MeshFactory...
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-            glEnableVertexAttribArray(0);
+            for (final VertexAttributeDescriptor vertexAttributeDescriptor : vertexFactory.getVertexAttributeDescriptors()) {
+                glVertexAttribPointer(vertexAttributeDescriptor.getIndex(), vertexAttributeDescriptor.getSize(), GL_FLOAT, false, 0, 0);
+                glEnableVertexAttribArray(vertexAttributeDescriptor.getIndex());
+            }
 
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);

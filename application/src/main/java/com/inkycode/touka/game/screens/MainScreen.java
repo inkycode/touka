@@ -14,6 +14,7 @@ import com.inkycode.touka.core.graphics.Mesh;
 import com.inkycode.touka.core.graphics.MeshFactory;
 import com.inkycode.touka.core.graphics.Renderer;
 import com.inkycode.touka.core.graphics.ShaderProgram;
+import com.inkycode.touka.core.graphics.VertexFactory;
 import com.inkycode.touka.core.graphics.impl.vertex.Position3Vertex;
 import com.inkycode.touka.core.platform.Canvas;
 
@@ -48,6 +49,8 @@ public class MainScreen implements Screen {
         int maxXSections = 10;
         int maxYSections = 8;
 
+        VertexFactory vertexFactory = meshFactory.getVertexFactory();
+
         for (int y = 0; y < maxYSections; y ++) {
             for (int x = 0; x < maxXSections; x ++) {
                 float xPos1 = ((x + 0) / (float) maxXSections), yPos1 = ((y + 0) / (float) maxYSections), zPos1 = 0.0f;
@@ -58,13 +61,19 @@ public class MainScreen implements Screen {
                 float xPos5 = ((x + 1) / (float) maxXSections), yPos5 = ((y + 1) / (float) maxYSections), zPos5 = 0.0f;
                 float xPos6 = ((x + 0) / (float) maxXSections), yPos6 = ((y + 1) / (float) maxYSections), zPos6 = 0.0f;
 
-                meshFactory.addVertex(new Position3Vertex(new Vector3f(xPos1, yPos1, zPos1)));
-                meshFactory.addVertex(new Position3Vertex(new Vector3f(xPos2, yPos2, zPos2)));
-                meshFactory.addVertex(new Position3Vertex(new Vector3f(xPos3, yPos3, zPos3)));
+                vertexFactory.setAttribute(0, new Vector3f(xPos1, yPos1, zPos1), Vector3f.class); meshFactory.addVertex(vertexFactory.build());
+                vertexFactory.setAttribute(0, new Vector3f(xPos2, yPos2, zPos2), Vector3f.class); meshFactory.addVertex(vertexFactory.build());
+                vertexFactory.setAttribute(0, new Vector3f(xPos3, yPos3, zPos3), Vector3f.class); meshFactory.addVertex(vertexFactory.build());
+
+                vertexFactory.setAttribute(0, new Vector3f(xPos4, yPos4, zPos4), Vector3f.class); meshFactory.addVertex(vertexFactory.build());
+                vertexFactory.setAttribute(0, new Vector3f(xPos5, yPos5, zPos5), Vector3f.class); meshFactory.addVertex(vertexFactory.build());
+                vertexFactory.setAttribute(0, new Vector3f(xPos6, yPos6, zPos6), Vector3f.class); meshFactory.addVertex(vertexFactory.build());
+                // meshFactory.addVertex(new Position3Vertex(new Vector3f(xPos2, yPos2, zPos2)));
+                // meshFactory.addVertex(new Position3Vertex(new Vector3f(xPos3, yPos3, zPos3)));
                 
-                meshFactory.addVertex(new Position3Vertex(new Vector3f(xPos4, yPos4, zPos4)));
-                meshFactory.addVertex(new Position3Vertex(new Vector3f(xPos5, yPos5, zPos5)));
-                meshFactory.addVertex(new Position3Vertex(new Vector3f(xPos6, yPos6, zPos6)));
+                // meshFactory.addVertex(new Position3Vertex(new Vector3f(xPos4, yPos4, zPos4)));
+                // meshFactory.addVertex(new Position3Vertex(new Vector3f(xPos5, yPos5, zPos5)));
+                // meshFactory.addVertex(new Position3Vertex(new Vector3f(xPos6, yPos6, zPos6)));
             }
         }
 

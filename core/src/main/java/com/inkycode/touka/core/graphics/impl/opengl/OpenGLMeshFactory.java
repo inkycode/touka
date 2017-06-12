@@ -37,8 +37,6 @@ public class OpenGLMeshFactory implements MeshFactory {
         this.vertices = new ArrayList<Vertex>();
 
         this.polygons = new ArrayList<Polygon>();
-
-        log.error("VertexFactory = {}", this.vertexFactory);
     }
 
     @Override
@@ -51,9 +49,13 @@ public class OpenGLMeshFactory implements MeshFactory {
         this.polygons.add(polygon);
     }
 
+    public VertexFactory getVertexFactory() {
+        return this.vertexFactory;
+    }
+
     @Override
     public Mesh build() {
-        return new OpenGLMesh(this.vertices, this.polygons);
+        return new OpenGLMesh(this.vertices, this.polygons, this.vertexFactory);
     }
 
 }
