@@ -17,7 +17,7 @@ public class LoggerInjector implements Injector {
         return "logger";
     }
 
-    public Object getValue(Field field, Component component, ComponentFactory componentFactory) {
+    public Object getValue(final Field field, final Component component, final ComponentFactory componentFactory) {
         LOG.info("Generating and returning logger for target field '{}'", field.getName());
 
         return LoggerFactory.getLogger(component.getImplementationClass());

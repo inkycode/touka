@@ -6,5 +6,5 @@ public interface Injector {
 
     String getName();
 
-    Object getValue(Field field, Component component, ComponentFactory componentFactory);
+    Object getValue(final Field field, final Component component, final ComponentFactory componentFactory);
 }

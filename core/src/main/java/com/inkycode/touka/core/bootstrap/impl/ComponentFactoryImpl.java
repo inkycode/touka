@@ -30,20 +30,18 @@ import com.inkycode.touka.core.bootstrap.impl.models.ConfigurationProperties;
 
 public class ComponentFactoryImpl implements ComponentFactory {
 
-    public static final String DEFAULT_CONFIGURATION_PATH = "BOOTSTRAP-INF/configuration";
+    private static final String DEFAULT_PROPERTIES_FILE_NAME = ".properties.json";
 
-    public static final String DEFAULT_PROPERTIES_FILE_NAME = ".properties.json";
+    private static final String COMPONENT_INSTANCE_NAME_DELIMITER = "-";
 
-    public static final String COMPONENT_INSTANCE_NAME_DELIMITER = "-";
+    private static final String COMPONENT_CONFIGURATION_FILE_EXTENSION = "json";
 
-    public static final String COMPONENT_CONFIGURATION_FILE_EXTENSION = "json";
-
-    public static final String COMPONENT_CONFIGURATION_FILE_EXTENSION_REGEX = "." + COMPONENT_CONFIGURATION_FILE_EXTENSION + "$";
+    private static final String COMPONENT_CONFIGURATION_FILE_EXTENSION_REGEX = "." + COMPONENT_CONFIGURATION_FILE_EXTENSION + "$";
 
     private final Map<Class<?>, Map<Class<?>, Map<String, Component>>> components = new HashMap<Class<?>, Map<Class<?>, Map<String, Component>>>();
 
     @Override
-    public void initialise(String configurationPath) {
+    public void initialise(final String configurationPath) {
         this.createComponents(configurationPath);
 
         this.injectComponents();
@@ -52,18 +50,18 @@ public class ComponentFactoryImpl implements ComponentFactory {
     }
 
     @Override
-    public void createComponents(String configurationPath) {
-        Map<Integer, Set<String>> sortedComponentConfigurationPaths = getComponentConfigurationPaths(configurationPath);
+    public void createComponents(final String configurationPath) {
+        final Map<Integer, Set<String>> sortedComponentConfigurationPaths = getComponentConfigurationPaths(configurationPath);
 
-        for (Set<String> componentConfigurationPaths : sortedComponentConfigurationPaths.values()) {
+        for (final Set<String> componentConfigurationPaths : sortedComponentConfigurationPaths.values()) {
 
-            for (String componentConfigurationPath : componentConfigurationPaths) {
+            for (final String componentConfigurationPath : componentConfigurationPaths) {
                 try {
-                    String[] fileNameParts = Paths.get(componentConfigurationPath).getFileName().toString().split(COMPONENT_INSTANCE_NAME_DELIMITER);
-                    String componentImplementationClassName = fileNameParts[0].replaceAll(COMPONENT_CONFIGURATION_FILE_EXTENSION_REGEX, "");
-                    String componentInstanceName = (fileNameParts.length == 2 ? fileNameParts[1] : fileNameParts[0]).replaceAll(COMPONENT_CONFIGURATION_FILE_EXTENSION_REGEX, "");
-                    Class<?> componentImplementationClass = getClass().getClassLoader().loadClass(componentImplementationClassName);
-                    Class<?> componentInterfaceClass = componentImplementationClass.getInterfaces()[0]; // Assume the first interface is what this component is an instance of
+                    final String[] fileNameParts = Paths.get(componentConfigurationPath).getFileName().toString().split(COMPONENT_INSTANCE_NAME_DELIMITER);
+                    final String componentImplementationClassName = fileNameParts[0].replaceAll(COMPONENT_CONFIGURATION_FILE_EXTENSION_REGEX, "");
+                    final String componentInstanceName = (fileNameParts.length == 2 ? fileNameParts[1] : fileNameParts[0]).replaceAll(COMPONENT_CONFIGURATION_FILE_EXTENSION_REGEX, "");
+                    final Class<?> componentImplementationClass = getClass().getClassLoader().loadClass(componentImplementationClassName);
+                    final Class<?> componentInterfaceClass = componentImplementationClass.getInterfaces()[0]; // Assume the first interface is what this component is an instance of
 
                     this.createComponent(componentInstanceName, populateComponentProperties(componentConfigurationPath, componentInterfaceClass, componentImplementationClass, componentInstanceName));
                 } catch (ClassNotFoundException e) {
@@ -75,14 +73,14 @@ public class ComponentFactoryImpl implements ComponentFactory {
 
     @Override
     public void injectComponents() {
-        for (Component component : this.getComponents()) {
+        for (final Component component : this.getComponents()) {
             component.inject(this.getComponentInstances(Injector.class), this);
         }
     }
 
     @Override
     public void activateComponents() {
-        for (Component component : this.getComponents()) {
+        for (final Component component : this.getComponents()) {
             component.activate();
         }
     }
@@ -133,7 +131,7 @@ public class ComponentFactoryImpl implements ComponentFactory {
     }
 
     @Override
-    public Component getComponent(final Class<?> interfaceClass, String instanceName) {
+    public Component getComponent(final Class<?> interfaceClass, final String instanceName) {
         if (this.components.containsKey(interfaceClass)) {
             if (!this.components.get(interfaceClass).isEmpty()) {
                 return this.components.get(interfaceClass)
@@ -153,7 +151,7 @@ public class ComponentFactoryImpl implements ComponentFactory {
     }
 
     @Override
-    public Component getComponent(final Class<?> interfaceClass, Class<?> implementationClass) {
+    public Component getComponent(final Class<?> interfaceClass, final Class<?> implementationClass) {
         if (this.components.containsKey(interfaceClass)) {
             if (!this.components.get(interfaceClass).isEmpty()) {
                 return this.components.get(interfaceClass)
@@ -191,7 +189,7 @@ public class ComponentFactoryImpl implements ComponentFactory {
     public List<Component> getComponents(final Class<?> interfaceClass) {
         if (this.components.containsKey(interfaceClass)) {
             if (!this.components.get(interfaceClass).isEmpty()) {
-                List<Component> components = new ArrayList<Component>();
+                final List<Component> components = new ArrayList<Component>();
 
                 for (Map<String, Component> componentMap : this.components.get(interfaceClass).values()) {
                     components.addAll(componentMap.values());
@@ -210,11 +208,11 @@ public class ComponentFactoryImpl implements ComponentFactory {
 
     @Override
     public <T> List<T> getComponentInstances(final Class<T> interfaceClass) {
-        List<Component> components = this.getComponents(interfaceClass);
+        final List<Component> components = this.getComponents(interfaceClass);
 
         if (components == null) return null;
 
-        List<T> componentInstances = new ArrayList<T>();
+        final List<T> componentInstances = new ArrayList<T>();
         
         for (Component component : this.getComponents(interfaceClass)) {
             componentInstances.add(component.getInstance(interfaceClass));
@@ -223,17 +221,17 @@ public class ComponentFactoryImpl implements ComponentFactory {
         return componentInstances;
     }
 
-    private Map<String, Object> populateComponentProperties(String componentConfigurationPath, Class<?> componentInterfaceClass, Class<?> componentImplementationClass, String componentInstanceName) {
-        Map<String, Object> componentProperties = new HashMap<String, Object>();
+    private Map<String, Object> populateComponentProperties(final String componentConfigurationPath, final Class<?> componentInterfaceClass, final Class<?> componentImplementationClass, final String componentInstanceName) {
+        final Map<String, Object> componentProperties = new HashMap<String, Object>();
 
         componentProperties.put(COMPONENT_PROPERTY_NAME_BOOTSTRAP_INTERFACE_CLASS, componentInterfaceClass);
         componentProperties.put(COMPONENT_PROPERTY_NAME_BOOTSTRAP_IMPLEMENTATION_CLASS, componentImplementationClass);
         componentProperties.put(COMPONENT_PROPERTY_NAME_BOOTSTRAP_INSTANCE_NAME, componentInstanceName);
         
-        try (InputStream resourceInputStream = getClass().getClassLoader().getResourceAsStream(componentConfigurationPath)) {
+        try (final InputStream resourceInputStream = getClass().getClassLoader().getResourceAsStream(componentConfigurationPath)) {
             if (resourceInputStream != null) {
-                try (InputStreamReader resourceInputStreamReader = new InputStreamReader(resourceInputStream, "UTF-8")) {
-                    try (JsonReader resourceJsonReader = new JsonReader(resourceInputStreamReader)) {
+                try (final InputStreamReader resourceInputStreamReader = new InputStreamReader(resourceInputStream, "UTF-8")) {
+                    try (final JsonReader resourceJsonReader = new JsonReader(resourceInputStreamReader)) {
                         componentProperties.putAll(new Gson().fromJson(resourceJsonReader, ComponentConfiguration.class));
                     } catch (IOException e) {
                         // TODO: Handle errors
@@ -249,18 +247,18 @@ public class ComponentFactoryImpl implements ComponentFactory {
         return componentProperties;
     }
 
-    private Map<Integer, Set<String>> getComponentConfigurationPaths(String basePath) {
-        Set<String> sortedResourcePaths = new TreeSet<String>();
-        Map<Integer, Set<String>> sortedComponentConfigurationPaths = new TreeMap<Integer, Set<String>>();
+    private Map<Integer, Set<String>> getComponentConfigurationPaths(final String basePath) {
+        final Set<String> sortedResourcePaths = new TreeSet<String>();
+        final Map<Integer, Set<String>> sortedComponentConfigurationPaths = new TreeMap<Integer, Set<String>>();
 
         // Get all resources that start with basePath and place them into a sorted list
-        File executionFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
+        final File executionFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
         if (executionFile.isFile()) {
-            try (JarFile jarFile = new JarFile(executionFile)) {
-                Enumeration<JarEntry> entries = jarFile.entries();
+            try (final JarFile jarFile = new JarFile(executionFile)) {
+                final Enumeration<JarEntry> entries = jarFile.entries();
 
                 while (entries.hasMoreElements()) {
-                    JarEntry entry = entries.nextElement();
+                    final JarEntry entry = entries.nextElement();
 
                     if (entry.getName().startsWith(basePath + "/")) {
                         sortedResourcePaths.add(entry.getName());
@@ -274,15 +272,15 @@ public class ComponentFactoryImpl implements ComponentFactory {
 
         // Iterate through all the resource paths in the sorted list and generate entries into the sorted component configuration paths map
         int loadLevel = Integer.MAX_VALUE;
-        for (String resourcePath : sortedResourcePaths) {
+        for (final String resourcePath : sortedResourcePaths) {
             if (resourcePath.endsWith("/")) {
                 loadLevel = Integer.MAX_VALUE;
 
-                try (InputStream resourceInputStream = getClass().getClassLoader().getResourceAsStream(resourcePath + DEFAULT_PROPERTIES_FILE_NAME)) {
+                try (final InputStream resourceInputStream = getClass().getClassLoader().getResourceAsStream(resourcePath + DEFAULT_PROPERTIES_FILE_NAME)) {
                     if (resourceInputStream != null) {
-                        try (InputStreamReader resourceInputStreamReader = new InputStreamReader(resourceInputStream, "UTF-8")) {
-                            try (JsonReader resourceJsonReader = new JsonReader(resourceInputStreamReader)) {
-                                ConfigurationProperties configurationProperties = new Gson().fromJson(resourceJsonReader, ConfigurationProperties.class);
+                        try (final InputStreamReader resourceInputStreamReader = new InputStreamReader(resourceInputStream, "UTF-8")) {
+                            try (final JsonReader resourceJsonReader = new JsonReader(resourceInputStreamReader)) {
+                                final ConfigurationProperties configurationProperties = new Gson().fromJson(resourceJsonReader, ConfigurationProperties.class);
                             
                                 loadLevel = configurationProperties.getLoadLevel();
                             } catch (IOException e) {

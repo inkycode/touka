@@ -1,6 +1,6 @@
 package com.inkycode.touka;
 
-import static com.inkycode.touka.core.bootstrap.impl.ComponentFactoryImpl.DEFAULT_CONFIGURATION_PATH;
+import static com.inkycode.touka.core.bootstrap.ComponentFactory.DEFAULT_CONFIGURATION_PATH;
 
 import com.inkycode.touka.core.bootstrap.impl.ComponentFactoryImpl;
 

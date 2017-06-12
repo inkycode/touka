@@ -19,7 +19,7 @@ public class PropertyInjector implements Injector {
         return "property";
     }
 
-    public Object getValue(Field field, Component component, ComponentFactory componentFactory) {
+    public Object getValue(final Field field, final Component component, final ComponentFactory componentFactory) {
         LOG.info("Getting value for property injector");
 
         LOG.info("Checking for named annotation");
@@ -30,10 +30,10 @@ public class PropertyInjector implements Injector {
             LOG.info("Named annotation found, using value as property name '{}' for value look-up", propertyName);
         }
 
-        Class<?> fieldTypeClass = field.getType();
+        final Class<?> fieldTypeClass = field.getType();
         if (component.getProperties().containsKey(propertyName)) {
             Object propertyValue = component.getProperties().get(propertyName);
-            Class<?> propertyClass = propertyValue.getClass();
+            final Class<?> propertyClass = propertyValue.getClass();
 
             // By default, gson treats all numbers as doubles, using reflection we get the target class type and cast.
             if (propertyClass == Double.class) {
@@ -57,7 +57,7 @@ public class PropertyInjector implements Injector {
             LOG.info("Property named '{}' found with value '{}', returning property value", propertyName, propertyValue, propertyClass);
             return propertyValue;
         } else if (field.isAnnotationPresent(Default.class)) {
-            Default defaultAnnotation = field.getDeclaredAnnotation(Default.class);
+            final Default defaultAnnotation = field.getDeclaredAnnotation(Default.class);
             Object propertyValue = defaultAnnotation.value();
 
             if (fieldTypeClass == Integer.class || fieldTypeClass == int.class) {

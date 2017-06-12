@@ -13,7 +13,7 @@ public interface Component {
 
     Object getInstance();
 
-    <T> T getInstance(Class<T> clazz);
+    <T> T getInstance(final Class<T> clazz);
 
     int getState();
 
@@ -23,5 +23,5 @@ public interface Component {
 
     void activate();
 
-    void inject(List<Injector> injectors, ComponentFactory componentFactory);
+    void inject(final List<Injector> injectors, final ComponentFactory componentFactory);
 }

@@ -5,27 +5,29 @@ import java.util.Map;
 
 public interface ComponentFactory {
 
-    void initialise(String configurationPath);
+    public static final String DEFAULT_CONFIGURATION_PATH = "BOOTSTRAP-INF/configuration";
 
-    void createComponents(String configurationPath);
+    void initialise(final String configurationPath);
+
+    void createComponents(final String configurationPath);
 
     void injectComponents();
 
     void activateComponents();
 
-    void createComponent(String instanceName, Map<String, Object> properties);
+    void createComponent(final String instanceName, final Map<String, Object> properties);
 
-    void createComponent(Class<?> interfaceClass, Class<?> implementationClass, String instanceName, Map<String, Object> properties);
+    void createComponent(final Class<?> interfaceClass, final Class<?> implementationClass, final String instanceName, final Map<String, Object> properties);
 
-    Component getComponent(Class<?> interfaceClass);
+    Component getComponent(final Class<?> interfaceClass);
 
-    Component getComponent(Class<?> interfaceClass, String instanceName);
+    Component getComponent(final Class<?> interfaceClass, final String instanceName);
 
-    Component getComponent(Class<?> interfaceClass, Class<?> implementationClass);
+    Component getComponent(final Class<?> interfaceClass, final Class<?> implementationClass);
 
     List<Component> getComponents();
 
-    List<Component> getComponents(Class<?> interfaceClass);
+    List<Component> getComponents(final Class<?> interfaceClass);
 
-    <T> List<T> getComponentInstances(Class<T> interfaceClass);
+    <T> List<T> getComponentInstances(final Class<T> interfaceClass);
 }

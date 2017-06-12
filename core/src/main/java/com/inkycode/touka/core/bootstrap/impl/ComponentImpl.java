@@ -18,8 +18,6 @@ public class ComponentImpl implements Component {
     public static final int COMPONENT_STATE_CREATED = 0x01;
     public static final int COMPONENT_STATE_ACTIVE = 0x02;
 
-    public static final Object[] COMPONENT_EMPTY_ARGUMENTS = new Object[] {};
-
     public static final String COMPONENT_PROPERTY_NAME_BOOTSTRAP_INTERFACE_CLASS = "bootstrap.interface-class";
     public static final String COMPONENT_PROPERTY_NAME_BOOTSTRAP_IMPLEMENTATION_CLASS = "bootstrap.implementation-class";
     public static final String COMPONENT_PROPERTY_NAME_BOOTSTRAP_INSTANCE_NAME = "bootstrap.instance-name";
@@ -28,13 +26,13 @@ public class ComponentImpl implements Component {
 
     private final Class<?> implementationClass;
 
-    private Object instance;
-
-    private String instanceName;
-
-    private int state;
+    private final String instanceName;
 
     private final Map<String, Object> properties;
+
+    private Object instance;
+
+    private int state;
 
     public ComponentImpl(final Class<?> interfaceClass, final Class<?> implementationClass, final Map<String, Object> properties) {
         this(implementationClass.getName(), interfaceClass, implementationClass, properties);
@@ -91,7 +89,7 @@ public class ComponentImpl implements Component {
             
             this.state = COMPONENT_STATE_CREATED;
         } catch (final ReflectiveOperationException e) {
-
+            // TODO: Handle errors
         }
     }
 
@@ -100,13 +98,13 @@ public class ComponentImpl implements Component {
         try {
             for (final Method method : this.getImplementationClass().getDeclaredMethods()) {
                 if (this.state == COMPONENT_STATE_CREATED && method.isAnnotationPresent(Activate.class)) {
-                    method.invoke(this.getInstance(), COMPONENT_EMPTY_ARGUMENTS);
+                    method.invoke(this.getInstance(), new Object[] {});
 
                     this.state = COMPONENT_STATE_ACTIVE;
                 }
             }
         } catch (final ReflectiveOperationException e) {
-
+            // TODO: Handle errors
         }
     }
 
@@ -115,9 +113,9 @@ public class ComponentImpl implements Component {
         for (final Field field : this.getImplementationClass().getDeclaredFields()) {
             if (field.isAnnotationPresent(Inject.class)) {
                 if (field.isAnnotationPresent(Source.class)) {
-                    Source source = field.getDeclaredAnnotation(Source.class);
+                    final Source source = field.getDeclaredAnnotation(Source.class);
                         
-                    String injectSource = source.value();
+                    final String injectSource = source.value();
 
                     for (Injector injector : injectors) {
                         try {
@@ -126,7 +124,7 @@ public class ComponentImpl implements Component {
                                 field.set(this.getInstance(), injector.getValue(field, this, componentFactory));
                             }
                         } catch (final ReflectiveOperationException e) {
-
+                            // TODO: Handle errors
                         }
                     }
                 }

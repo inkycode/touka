@@ -9,12 +9,11 @@ import com.inkycode.touka.core.bootstrap.annotations.Source;
 
 public class ScreenManagerImpl implements ScreenManager {
 
-
-    private Screen activeScreen;
-
     @Inject
     @Source("component")
     private Map<String, Screen> screens;
+
+    private Screen activeScreen;
 
     @Override
     public void setActiveScreen(Class<?> screen) {

@@ -22,17 +22,17 @@ public class ComponentInjector implements Injector {
         return "component";
     }
 
-    public Object getValue(Field field, Component component, ComponentFactory componentFactory) {
+    public Object getValue(final Field field, final Component component, final ComponentFactory componentFactory) {
         LOG.info("Getting value for component injector");
 
         if (Map.class.isAssignableFrom(field.getType()) && field.getGenericType() instanceof ParameterizedType) {
             LOG.info("Target field '{}' is Map assignable", field.getName());
 
-            ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
-            Class<?> componentInterface = (Class<?>) parameterizedType.getActualTypeArguments()[1];
-            Map<String, Object> componentInstanceMap = new HashMap<String, Object>();
+            final ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
+            final Class<?> componentInterface = (Class<?>) parameterizedType.getActualTypeArguments()[1];
+            final Map<String, Object> componentInstanceMap = new HashMap<String, Object>();
 
-            for (Component componentToInject : componentFactory.getComponents(componentInterface)) {
+            for (final Component componentToInject : componentFactory.getComponents(componentInterface)) {
                 componentToInject.activate();
 
                 LOG.info("Putting component instance '{}' into map", componentToInject.getInstanceName());
@@ -51,7 +51,7 @@ public class ComponentInjector implements Injector {
 
                 LOG.info("Checking for via annotation", field.getName());
                 if (field.isAnnotationPresent(Via.class)) {
-                    String via = field.getDeclaredAnnotation(Via.class).value();
+                    final String via = field.getDeclaredAnnotation(Via.class).value();
 
                     LOG.info("Via annotation present, checking for via source");
                     if ("property".equals(via)) {
@@ -68,7 +68,7 @@ public class ComponentInjector implements Injector {
 
                 if (componentToInject == null) {
                     try {
-                        Class<?> implementationClass = Class.forName(name);
+                        final Class<?> implementationClass = Class.forName(name);
 
                         componentToInject = componentFactory.getComponent(field.getType(), implementationClass);
                     } catch (ClassNotFoundException e) {

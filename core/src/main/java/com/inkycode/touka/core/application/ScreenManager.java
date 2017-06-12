@@ -2,9 +2,9 @@ package com.inkycode.touka.core.application;
 
 public interface ScreenManager {
 
-    void setActiveScreen(Class<?> screen);
+    void setActiveScreen(final Class<?> screen);
 
-    void setActiveScreen(String screenName);
+    void setActiveScreen(final String screenName);
 
     Screen getActiveScreen();
 
