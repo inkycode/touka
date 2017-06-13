@@ -1,5 +1,5 @@
 {
     "vertexAttributeDescriptors": ["position3"],
-    "vertexClazz": "com.inkycode.touka.core.graphics.impl.vertex.Position3Vertex",
+    "vertexClazz": "com.inkycode.touka.core.graphics.impl.vertex.VertexImpl",
     "vertexSize": 3
 }

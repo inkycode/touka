@@ -27,6 +27,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.joml.Vector2i;
+import org.joml.Vector3f;
+import org.joml.Vector3i;
 import org.lwjgl.system.MemoryStack;
 
 import com.inkycode.touka.core.graphics.Mesh;
@@ -43,12 +46,12 @@ public class OpenGLMesh implements Mesh {
 
     private final int[] vboAttributeHandles;
 
-    public OpenGLMesh(final List<Vertex> vertices, final List<Polygon> polygons, final VertexFactory vertexFactory) {
+    public OpenGLMesh(final List<Vertex> vertices, final List<Polygon> polygons, final Set<VertexAttributeDescriptor> vertexAttributeDescriptors) {
         //this.vboAttributeHandles = new HashSet<Integer>();
         
         // TODO: Index buffers?
         try (MemoryStack stack = stackPush()) {
-            final int bufferCount = vertexFactory.getVertexAttributeDescriptors().size();
+            final int bufferCount = vertexAttributeDescriptors.size();
 
             this.vertexCount = vertices.size();
             this.vaoHandle = glGenVertexArrays();
@@ -58,7 +61,7 @@ public class OpenGLMesh implements Mesh {
             this.vboAttributeHandles = new int[bufferCount];
             glGenBuffers(this.vboAttributeHandles);
 
-            for (final VertexAttributeDescriptor vertexAttributeDescriptor : vertexFactory.getVertexAttributeDescriptors()) {
+            for (final VertexAttributeDescriptor vertexAttributeDescriptor : vertexAttributeDescriptors) {
                 final int vboAttributeHandle = this.vboAttributeHandles[vertexAttributeDescriptor.getIndex()];
                 final int bufferSize = vertices.size() * vertexAttributeDescriptor.getSize();
                 
@@ -100,7 +103,7 @@ public class OpenGLMesh implements Mesh {
         for (final Vertex vertex : vertices) {
             final int offset = vertexAttributeDescriptor.getOffset();
             for (int index = 0; index < vertexAttributeDescriptor.getSize(); index ++) {
-                buffer.put(vertex.get(offset + index, Float.class));
+                buffer.put(vertex.getAttribute(offset, float[].class)[index]);
             }
         }
 
@@ -119,7 +122,7 @@ public class OpenGLMesh implements Mesh {
         for (final Vertex vertex : vertices) {
             final int offset = vertexAttributeDescriptor.getOffset();
             for (int index = 0; index < vertexAttributeDescriptor.getSize(); index ++) {
-                buffer.put(vertex.get(offset + index, Integer.class));
+                buffer.put(vertex.getAttribute(offset, int[].class)[index]);
             }
         }
 

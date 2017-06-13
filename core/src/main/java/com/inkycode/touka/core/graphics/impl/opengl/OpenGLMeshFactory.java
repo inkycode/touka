@@ -55,7 +55,7 @@ public class OpenGLMeshFactory implements MeshFactory {
 
     @Override
     public Mesh build() {
-        return new OpenGLMesh(this.vertices, this.polygons, this.vertexFactory);
+        return new OpenGLMesh(this.vertices, this.polygons, this.vertexFactory.getVertexAttributeDescriptors());
     }
 
 }

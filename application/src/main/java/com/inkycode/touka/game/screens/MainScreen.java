@@ -1,9 +1,7 @@
 package com.inkycode.touka.game.screens;
 
-import java.util.Map;
 import java.util.concurrent.Callable;
 
-import org.joml.Vector3f;
 import org.slf4j.Logger;
 
 import com.inkycode.touka.core.application.Screen;
@@ -15,7 +13,6 @@ import com.inkycode.touka.core.graphics.MeshFactory;
 import com.inkycode.touka.core.graphics.Renderer;
 import com.inkycode.touka.core.graphics.ShaderProgram;
 import com.inkycode.touka.core.graphics.VertexFactory;
-import com.inkycode.touka.core.graphics.impl.vertex.Position3Vertex;
 import com.inkycode.touka.core.platform.Canvas;
 
 public class MainScreen implements Screen {
@@ -62,13 +59,13 @@ public class MainScreen implements Screen {
                 float xPos5 = ((x + 1) / (float) maxXSections), yPos5 = ((y + 1) / (float) maxYSections), zPos5 = 0.0f;
                 float xPos6 = ((x + 0) / (float) maxXSections), yPos6 = ((y + 1) / (float) maxYSections), zPos6 = 0.0f;
 
-                vertexFactory.setAttribute(0, new Vector3f(xPos1, yPos1, zPos1)); meshFactory.addVertex(vertexFactory.build());
-                vertexFactory.setAttribute(0, new Vector3f(xPos2, yPos2, zPos2)); meshFactory.addVertex(vertexFactory.build());
-                vertexFactory.setAttribute(0, new Vector3f(xPos3, yPos3, zPos3)); meshFactory.addVertex(vertexFactory.build());
+                vertexFactory.setAttribute(0, new float[] {xPos1, yPos1, zPos1}); meshFactory.addVertex(vertexFactory.build());
+                vertexFactory.setAttribute(0, new float[] {xPos2, yPos2, zPos2}); meshFactory.addVertex(vertexFactory.build());
+                vertexFactory.setAttribute(0, new float[] {xPos3, yPos3, zPos3}); meshFactory.addVertex(vertexFactory.build());
 
-                vertexFactory.setAttribute(0, new Vector3f(xPos4, yPos4, zPos4)); meshFactory.addVertex(vertexFactory.build());
-                vertexFactory.setAttribute(0, new Vector3f(xPos5, yPos5, zPos5)); meshFactory.addVertex(vertexFactory.build());
-                vertexFactory.setAttribute(0, new Vector3f(xPos6, yPos6, zPos6)); meshFactory.addVertex(vertexFactory.build());
+                vertexFactory.setAttribute(0, new float[] {xPos4, yPos4, zPos4}); meshFactory.addVertex(vertexFactory.build());
+                vertexFactory.setAttribute(0, new float[] {xPos5, yPos5, zPos5}); meshFactory.addVertex(vertexFactory.build());
+                vertexFactory.setAttribute(0, new float[] {xPos6, yPos6, zPos6}); meshFactory.addVertex(vertexFactory.build());
             }
         }
 

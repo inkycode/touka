@@ -37,8 +37,29 @@ public class VertexFactoryImpl implements VertexFactory {
     }
 
     @Override
-    public <T> void setAttribute(final int position, final T value) {
+    public void setAttribute(final int position, final Object value) {
         this.vertexAttributes.put(position, value);
+    }
+
+    @Override
+    public <T> T getAttribute(final int position, final Class<T> type) {
+        try {
+            return type.cast(this.vertexAttributes.get(position));
+        } catch (ClassCastException e) {
+            // TODO: Handle errors
+        }
+        
+        return null;
+    }
+
+    @Override
+    public int getVertexSize() {
+        return this.vertexSize;
+    }
+
+    @Override
+    public Set<VertexAttributeDescriptor> getVertexAttributeDescriptors() {
+        return this.vertexAttributeDescriptors;
     }
 
     @Override
@@ -54,21 +75,5 @@ public class VertexFactoryImpl implements VertexFactory {
 
         return null;
     }
-
-    @Override
-    public <T> T getAttribute(final int position, final Class<T> type) {
-        return type.cast(this.vertexAttributes.get(position));
-    }
-
-    @Override
-    public int getVertexSize() {
-        return this.vertexSize;
-    }
-
-    @Override
-    public Set<VertexAttributeDescriptor> getVertexAttributeDescriptors() {
-        return this.vertexAttributeDescriptors;
-    }
-
 
 }
