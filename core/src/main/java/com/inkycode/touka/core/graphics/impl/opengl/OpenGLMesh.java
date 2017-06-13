@@ -41,25 +41,31 @@ public class OpenGLMesh implements Mesh {
 
     private final int vertexCount;
 
-    private final Set<Integer> vboHandles;
+    private final int[] vboAttributeHandles;
 
     public OpenGLMesh(final List<Vertex> vertices, final List<Polygon> polygons, final VertexFactory vertexFactory) {
-        this.vboHandles = new HashSet<Integer>();
+        //this.vboAttributeHandles = new HashSet<Integer>();
         
         // TODO: Index buffers?
         try (MemoryStack stack = stackPush()) {
+            final int bufferCount = vertexFactory.getVertexAttributeDescriptors().size();
+
             this.vertexCount = vertices.size();
             this.vaoHandle = glGenVertexArrays();
 
             glBindVertexArray(this.vaoHandle);
 
-            for (final VertexAttributeDescriptor vertexAttributeDescriptor : vertexFactory.getVertexAttributeDescriptors()) {
-                final int bufferSize = vertices.size() * vertexAttributeDescriptor.getSize();
+            this.vboAttributeHandles = new int[bufferCount];
+            glGenBuffers(this.vboAttributeHandles);
 
+            for (final VertexAttributeDescriptor vertexAttributeDescriptor : vertexFactory.getVertexAttributeDescriptors()) {
+                final int vboAttributeHandle = this.vboAttributeHandles[vertexAttributeDescriptor.getIndex()];
+                final int bufferSize = vertices.size() * vertexAttributeDescriptor.getSize();
+                
                 if (vertexAttributeDescriptor.getDataType() == DATA_TYPE_FLOAT) {
-                    vboHandles.add(this.buildFloatVertexBufferAttribute(stack, vertexAttributeDescriptor, vertices, bufferSize));
+                    this.bindFloatVertexBufferAttribute(stack, vertexAttributeDescriptor, vertices, bufferSize, vboAttributeHandle);
                 } else if (vertexAttributeDescriptor.getDataType() == DATA_TYPE_INTEGER) {
-                    vboHandles.add(this.buildIntegerVertexBufferAttribute(stack, vertexAttributeDescriptor, vertices, bufferSize));
+                    this.bindIntegerVertexBufferAttribute(stack, vertexAttributeDescriptor, vertices, bufferSize, vboAttributeHandle);
                 }
 
                 glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -82,15 +88,11 @@ public class OpenGLMesh implements Mesh {
         glBindVertexArray(0);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        for (final int vboHandle : this.vboHandles) {
-            glDeleteBuffers(vboHandle);
-        }
+        glDeleteBuffers(this.vboAttributeHandles);
     }
 
-    private int buildFloatVertexBufferAttribute(final MemoryStack stack, final VertexAttributeDescriptor vertexAttributeDescriptor, final List<Vertex> vertices, final int bufferSize) {
-        final int vboHandle = glGenBuffers();
-
-        glBindBuffer(GL_ARRAY_BUFFER, vboHandle);
+    private void bindFloatVertexBufferAttribute(final MemoryStack stack, final VertexAttributeDescriptor vertexAttributeDescriptor, final List<Vertex> vertices, final int bufferSize, final int vboAttributeHandle) {
+        glBindBuffer(GL_ARRAY_BUFFER, vboAttributeHandle);
         glEnableVertexAttribArray(vertexAttributeDescriptor.getIndex());
 
         final FloatBuffer buffer = stack.mallocFloat(bufferSize);
@@ -106,14 +108,10 @@ public class OpenGLMesh implements Mesh {
 
         glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
         glVertexAttribPointer(vertexAttributeDescriptor.getIndex(), vertexAttributeDescriptor.getSize(), GL_FLOAT, false, 0, 0);
-
-        return vboHandle;
     }
 
-    private int buildIntegerVertexBufferAttribute(final MemoryStack stack, final VertexAttributeDescriptor vertexAttributeDescriptor, final List<Vertex> vertices, final int bufferSize) {
-        final int vboHandle = glGenBuffers();
-
-        glBindBuffer(GL_ARRAY_BUFFER, vboHandle);
+    private void bindIntegerVertexBufferAttribute(final MemoryStack stack, final VertexAttributeDescriptor vertexAttributeDescriptor, final List<Vertex> vertices, final int bufferSize, final int vboAttributeHandle) {
+        glBindBuffer(GL_ARRAY_BUFFER, vboAttributeHandle);
         glEnableVertexAttribArray(vertexAttributeDescriptor.getIndex());
 
         final IntBuffer buffer = stack.mallocInt(bufferSize);
@@ -129,7 +127,5 @@ public class OpenGLMesh implements Mesh {
 
         glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
         glVertexAttribPointer(vertexAttributeDescriptor.getIndex(), vertexAttributeDescriptor.getSize(), GL_INT, false, 0, 0);
-
-        return vboHandle;
     }
 }
