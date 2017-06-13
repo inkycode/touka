@@ -1,3 +1,4 @@
 {
-    "vertexFactory": "position3"
+    "vertexFactory": "position3",
+    "primitiveFactory": "triangle"
 }

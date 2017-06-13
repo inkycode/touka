@@ -13,6 +13,7 @@ import com.inkycode.touka.core.bootstrap.annotations.Via;
 import com.inkycode.touka.core.graphics.Mesh;
 import com.inkycode.touka.core.graphics.MeshFactory;
 import com.inkycode.touka.core.graphics.Primitive;
+import com.inkycode.touka.core.graphics.PrimitiveFactory;
 import com.inkycode.touka.core.graphics.Vertex;
 import com.inkycode.touka.core.graphics.VertexFactory;
 
@@ -27,6 +28,12 @@ public class OpenGLMeshFactory implements MeshFactory {
     @Via("property")
     @Named("vertexFactory")
     private VertexFactory vertexFactory;
+
+    @Inject
+    @Source("component")
+    @Via("property")
+    @Named("primitiveFactory")
+    private PrimitiveFactory primitiveFactory;
 
     private List<Vertex> vertices;
 
@@ -49,13 +56,19 @@ public class OpenGLMeshFactory implements MeshFactory {
         this.primitives.add(primitive);
     }
 
+    @Override
     public VertexFactory getVertexFactory() {
         return this.vertexFactory;
     }
 
     @Override
+    public PrimitiveFactory getPrimitiveFactory() {
+        return this.primitiveFactory;
+    }
+
+    @Override
     public Mesh build() {
-        return new OpenGLMesh(this.vertices, this.primitives, this.vertexFactory.getVertexAttributeDescriptors());
+        return new OpenGLMesh(this.vertices, this.primitives, this.vertexFactory.getVertexAttributeDescriptors(), this.primitiveFactory.getPrimitiveDescriptor());
     }
 
 }

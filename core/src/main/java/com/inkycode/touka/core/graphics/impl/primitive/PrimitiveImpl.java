@@ -6,7 +6,7 @@ public class PrimitiveImpl implements Primitive {
 
     final private int[] indices;
 
-    public PrimitiveImpl(int[] indices) {
+    public PrimitiveImpl(final int[] indices) {
         this.indices = new int[indices.length];
 
         for (int i = 0; i < indices.length; i ++) {

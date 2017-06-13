@@ -10,6 +10,7 @@ import com.inkycode.touka.core.bootstrap.annotations.Named;
 import com.inkycode.touka.core.bootstrap.annotations.Source;
 import com.inkycode.touka.core.graphics.Mesh;
 import com.inkycode.touka.core.graphics.MeshFactory;
+import com.inkycode.touka.core.graphics.PrimitiveFactory;
 import com.inkycode.touka.core.graphics.Renderer;
 import com.inkycode.touka.core.graphics.ShaderProgram;
 import com.inkycode.touka.core.graphics.VertexFactory;
@@ -48,6 +49,9 @@ public class MainScreen implements Screen {
         int maxYSections = 8;
 
         VertexFactory vertexFactory = meshFactory.getVertexFactory();
+        PrimitiveFactory primitiveFactory = meshFactory.getPrimitiveFactory();
+
+        int primitiveOffset = 0;
 
         for (int y = 0; y < maxYSections; y ++) {
             for (int x = 0; x < maxXSections; x ++) {
@@ -63,13 +67,27 @@ public class MainScreen implements Screen {
                 vertexFactory.setAttribute(0, new float[] {xPos2, yPos2, zPos2}); meshFactory.addVertex(vertexFactory.build());
                 vertexFactory.setAttribute(0, new float[] {xPos3, yPos3, zPos3}); meshFactory.addVertex(vertexFactory.build());
 
+                primitiveFactory.setIndex(0, primitiveOffset + 0);
+                primitiveFactory.setIndex(1, primitiveOffset + 1);
+                primitiveFactory.setIndex(2, primitiveOffset + 2);
+                meshFactory.addPrimitive(primitiveFactory.build());
+                primitiveOffset += 3;
+
                 vertexFactory.setAttribute(0, new float[] {xPos4, yPos4, zPos4}); meshFactory.addVertex(vertexFactory.build());
                 vertexFactory.setAttribute(0, new float[] {xPos5, yPos5, zPos5}); meshFactory.addVertex(vertexFactory.build());
                 vertexFactory.setAttribute(0, new float[] {xPos6, yPos6, zPos6}); meshFactory.addVertex(vertexFactory.build());
+
+                primitiveFactory.setIndex(0, primitiveOffset + 0);
+                primitiveFactory.setIndex(1, primitiveOffset + 1);
+                primitiveFactory.setIndex(2, primitiveOffset + 2);
+                meshFactory.addPrimitive(primitiveFactory.build());
+                primitiveOffset += 3;
             }
         }
 
         this.mesh = meshFactory.build();
+
+        log.info("Mesh stats {vertexCount = {}, indexCount = {}, primitiveCount = {}}", this.mesh.getVertexCount(), this.mesh.getIndexCount(), this.mesh.getPrimitiveCount());
 
         this.basicShader.load();
 

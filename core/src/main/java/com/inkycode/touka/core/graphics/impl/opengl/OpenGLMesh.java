@@ -9,11 +9,13 @@ import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
-import static org.lwjgl.opengl.GL11.glDrawArrays;
+import static org.lwjgl.opengl.GL11.glDrawElements;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_INT;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 
 import static org.lwjgl.system.MemoryStack.stackPush;
@@ -30,6 +32,7 @@ import org.lwjgl.system.MemoryStack;
 
 import com.inkycode.touka.core.graphics.Mesh;
 import com.inkycode.touka.core.graphics.Primitive;
+import com.inkycode.touka.core.graphics.PrimitiveDescriptor;
 import com.inkycode.touka.core.graphics.Vertex;
 import com.inkycode.touka.core.graphics.VertexAttributeDescriptor;
 
@@ -37,18 +40,21 @@ public class OpenGLMesh implements Mesh {
 
     private final int vaoHandle;
 
-    private final int vertexCount;
+    private final int vboIndexHandle;
 
     private final int[] vboAttributeHandles;
 
-    public OpenGLMesh(final List<Vertex> vertices, final List<Primitive> polygons, final Set<VertexAttributeDescriptor> vertexAttributeDescriptors) {        
-        // TODO: Index buffers?
+    private final int vertexCount, indexCount, primitiveCount;
+
+    public OpenGLMesh(final List<Vertex> vertices, final List<Primitive> primitives, final Set<VertexAttributeDescriptor> vertexAttributeDescriptors, final PrimitiveDescriptor primitiveDescriptor) {
         try (MemoryStack stack = stackPush()) {
             final int bufferCount = vertexAttributeDescriptors.size();
 
             this.vertexCount = vertices.size();
-            this.vaoHandle = glGenVertexArrays();
+            this.primitiveCount = primitives.size();
+            this.indexCount = this.primitiveCount * primitiveDescriptor.getSize();
 
+            this.vaoHandle = glGenVertexArrays();
             glBindVertexArray(this.vaoHandle);
 
             this.vboAttributeHandles = new int[bufferCount];
@@ -63,19 +69,49 @@ public class OpenGLMesh implements Mesh {
                 } else if (vertexAttributeDescriptor.getDataType() == DATA_TYPE_INTEGER) {
                     this.bindIntegerVertexBufferAttribute(stack, vertexAttributeDescriptor, vertices, bufferSize, vboAttributeHandle);
                 }
-
-                glBindBuffer(GL_ARRAY_BUFFER, 0);
             }
+
+            this.vboIndexHandle = glGenBuffers();
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.vboIndexHandle);
+
+            final IntBuffer indexBuffer = stack.mallocInt(this.indexCount);
+            for (final Primitive primitive : primitives) {
+                indexBuffer.put(primitive.getIndices());
+            }
+            
+            indexBuffer.flip();
+
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer, GL_STATIC_DRAW);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
             glBindVertexArray(0);
         }
     }
 
     @Override
+    public int getVertexCount() {
+        return this.vertexCount;
+    }
+
+    @Override
+    public int getIndexCount() {
+        return this.indexCount;
+    }
+
+    @Override
+    public int getPrimitiveCount() {
+        return this.primitiveCount;
+    }
+
+    @Override
     public void render() {
         glBindVertexArray(this.vaoHandle);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.vboIndexHandle);
 
-        glDrawArrays(GL_TRIANGLES, 0, this.vertexCount);
+        glDrawElements(GL_TRIANGLES, this.indexCount, GL_UNSIGNED_INT, 0);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
     }
 
     @Override
@@ -85,12 +121,12 @@ public class OpenGLMesh implements Mesh {
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glDeleteBuffers(this.vboAttributeHandles);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glDeleteBuffers(this.vboIndexHandle);
     }
 
     private void bindFloatVertexBufferAttribute(final MemoryStack stack, final VertexAttributeDescriptor vertexAttributeDescriptor, final List<Vertex> vertices, final int bufferSize, final int vboAttributeHandle) {
-        glBindBuffer(GL_ARRAY_BUFFER, vboAttributeHandle);
-        glEnableVertexAttribArray(vertexAttributeDescriptor.getIndex());
-
         final FloatBuffer buffer = stack.mallocFloat(bufferSize);
 
         for (final Vertex vertex : vertices) {
@@ -102,14 +138,16 @@ public class OpenGLMesh implements Mesh {
 
         buffer.flip();
 
+        glBindBuffer(GL_ARRAY_BUFFER, vboAttributeHandle);
         glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(vertexAttributeDescriptor.getIndex());
         glVertexAttribPointer(vertexAttributeDescriptor.getIndex(), vertexAttributeDescriptor.getSize(), GL_FLOAT, false, 0, 0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
     private void bindIntegerVertexBufferAttribute(final MemoryStack stack, final VertexAttributeDescriptor vertexAttributeDescriptor, final List<Vertex> vertices, final int bufferSize, final int vboAttributeHandle) {
-        glBindBuffer(GL_ARRAY_BUFFER, vboAttributeHandle);
-        glEnableVertexAttribArray(vertexAttributeDescriptor.getIndex());
-
         final IntBuffer buffer = stack.mallocInt(bufferSize);
 
         for (final Vertex vertex : vertices) {
@@ -121,7 +159,12 @@ public class OpenGLMesh implements Mesh {
 
         buffer.flip();
 
+        glBindBuffer(GL_ARRAY_BUFFER, vboAttributeHandle);
         glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(vertexAttributeDescriptor.getIndex());
         glVertexAttribPointer(vertexAttributeDescriptor.getIndex(), vertexAttributeDescriptor.getSize(), GL_INT, false, 0, 0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 }

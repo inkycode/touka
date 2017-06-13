@@ -14,7 +14,7 @@ public class VertexImpl implements Vertex {
     }
 
     @Override
-    public <T> T getAttribute(final int index, Class<T> type) {
+    public <T> T getAttribute(final int index, final Class<T> type) {
 
         try {
             return type.cast(attributes.get(index));

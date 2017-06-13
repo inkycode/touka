@@ -1,0 +1,4 @@
+{
+    "primitiveDescriptor": "triangle",
+    "primitiveClass": "com.inkycode.touka.core.graphics.impl.primitive.PrimitiveImpl"
+}

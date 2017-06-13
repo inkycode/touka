@@ -25,11 +25,7 @@ public class VertexFactoryImpl implements VertexFactory {
 
     @Inject
     @Source("property")
-    private String vertexClazz;
-
-    @Inject
-    @Source("property")
-    private int vertexSize;
+    private String vertexClass;
 
     @Activate
     public void activate() {
@@ -53,11 +49,6 @@ public class VertexFactoryImpl implements VertexFactory {
     }
 
     @Override
-    public int getVertexSize() {
-        return this.vertexSize;
-    }
-
-    @Override
     public Set<VertexAttributeDescriptor> getVertexAttributeDescriptors() {
         return this.vertexAttributeDescriptors;
     }
@@ -66,9 +57,9 @@ public class VertexFactoryImpl implements VertexFactory {
     public Vertex build() {
         
         try {
-            final Class<? extends Vertex> vertexClazz = Class.forName(this.vertexClazz).asSubclass(Vertex.class);
+            final Class<? extends Vertex> vertexClass = Class.forName(this.vertexClass).asSubclass(Vertex.class);
 
-            return vertexClazz.getDeclaredConstructor(Map.class).newInstance(this.vertexAttributes);
+            return vertexClass.getDeclaredConstructor(Map.class).newInstance(this.vertexAttributes);
         } catch (ReflectiveOperationException e) {
             // TODO: Handle errors
         }

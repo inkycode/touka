@@ -8,6 +8,8 @@ public interface MeshFactory {
 
     VertexFactory getVertexFactory();
 
+    PrimitiveFactory getPrimitiveFactory();
+
     Mesh build();
 
 }

@@ -10,8 +10,6 @@ public interface VertexFactory {
 
     Vertex build();
 
-    int getVertexSize();
-
     Set<VertexAttributeDescriptor> getVertexAttributeDescriptors();
 
 }
