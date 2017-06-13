@@ -23,20 +23,15 @@ import static com.inkycode.touka.core.graphics.VertexAttributeDescriptor.DATA_TY
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.joml.Vector2i;
-import org.joml.Vector3f;
-import org.joml.Vector3i;
 import org.lwjgl.system.MemoryStack;
 
 import com.inkycode.touka.core.graphics.Mesh;
-import com.inkycode.touka.core.graphics.Polygon;
+import com.inkycode.touka.core.graphics.Primitive;
 import com.inkycode.touka.core.graphics.Vertex;
 import com.inkycode.touka.core.graphics.VertexAttributeDescriptor;
-import com.inkycode.touka.core.graphics.VertexFactory;
 
 public class OpenGLMesh implements Mesh {
 
@@ -46,9 +41,7 @@ public class OpenGLMesh implements Mesh {
 
     private final int[] vboAttributeHandles;
 
-    public OpenGLMesh(final List<Vertex> vertices, final List<Polygon> polygons, final Set<VertexAttributeDescriptor> vertexAttributeDescriptors) {
-        //this.vboAttributeHandles = new HashSet<Integer>();
-        
+    public OpenGLMesh(final List<Vertex> vertices, final List<Primitive> polygons, final Set<VertexAttributeDescriptor> vertexAttributeDescriptors) {        
         // TODO: Index buffers?
         try (MemoryStack stack = stackPush()) {
             final int bufferCount = vertexAttributeDescriptors.size();

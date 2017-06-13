@@ -1,4 +1,4 @@
-package com.inkycode.touka.core.graphics.impl.vertexattribute;
+package com.inkycode.touka.core.graphics.impl.vertexattributedescriptor;
 
 import com.inkycode.touka.core.bootstrap.annotations.Inject;
 import com.inkycode.touka.core.bootstrap.annotations.Source;

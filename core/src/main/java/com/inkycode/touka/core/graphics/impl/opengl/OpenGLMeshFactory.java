@@ -12,7 +12,7 @@ import com.inkycode.touka.core.bootstrap.annotations.Source;
 import com.inkycode.touka.core.bootstrap.annotations.Via;
 import com.inkycode.touka.core.graphics.Mesh;
 import com.inkycode.touka.core.graphics.MeshFactory;
-import com.inkycode.touka.core.graphics.Polygon;
+import com.inkycode.touka.core.graphics.Primitive;
 import com.inkycode.touka.core.graphics.Vertex;
 import com.inkycode.touka.core.graphics.VertexFactory;
 
@@ -30,13 +30,13 @@ public class OpenGLMeshFactory implements MeshFactory {
 
     private List<Vertex> vertices;
 
-    private List<Polygon> polygons;
+    private List<Primitive> primitives;
 
     @Activate
     public void activate() {
         this.vertices = new ArrayList<Vertex>();
 
-        this.polygons = new ArrayList<Polygon>();
+        this.primitives = new ArrayList<Primitive>();
     }
 
     @Override
@@ -45,8 +45,8 @@ public class OpenGLMeshFactory implements MeshFactory {
     }
 
     @Override
-    public void addPolygon(final Polygon polygon) {
-        this.polygons.add(polygon);
+    public void addPrimitive(final Primitive primitive) {
+        this.primitives.add(primitive);
     }
 
     public VertexFactory getVertexFactory() {
@@ -55,7 +55,7 @@ public class OpenGLMeshFactory implements MeshFactory {
 
     @Override
     public Mesh build() {
-        return new OpenGLMesh(this.vertices, this.polygons, this.vertexFactory.getVertexAttributeDescriptors());
+        return new OpenGLMesh(this.vertices, this.primitives, this.vertexFactory.getVertexAttributeDescriptors());
     }
 
 }

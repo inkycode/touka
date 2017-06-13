@@ -58,6 +58,7 @@ public class ComponentInjector implements Injector {
 
                 LOG.info("Via and named annotation present, checking for via source");
                 if ("property".equals(via)) {
+                    // Todo: Make type safe
                     final List<String> names = (List<String>) component.getProperties().get(propertyName);
 
                     LOG.info("Via source is property, using property value for name");

@@ -4,7 +4,7 @@ public interface MeshFactory {
 
     void addVertex(final Vertex vertex);
 
-    void addPolygon(final Polygon polygon);
+    void addPrimitive(final Primitive primitive);
 
     VertexFactory getVertexFactory();
 
