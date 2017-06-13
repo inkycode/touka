@@ -14,13 +14,9 @@ public class Position3Vertex implements Vertex {
         this.position = (Vector3f) attributes.get(0);
     }
 
-    // public Position3Vertex(final Vector3f position) {
-    //     this.position = position;
-    // }
-
     @Override
-    public float get(final int index) {
-        return position.get(index);
+    public <T> T get(final int index, Class<T> type) {
+        return type.cast(position.get(index));
     }
 
 }

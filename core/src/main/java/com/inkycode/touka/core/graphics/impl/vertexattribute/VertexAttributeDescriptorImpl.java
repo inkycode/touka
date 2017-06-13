@@ -18,6 +18,10 @@ public class VertexAttributeDescriptorImpl implements VertexAttributeDescriptor 
     @Source("property")
     private int index;
 
+    @Inject
+    @Source("property")
+    private int dataType;
+
 
     @Override
     public int getSize() {
@@ -32,6 +36,11 @@ public class VertexAttributeDescriptorImpl implements VertexAttributeDescriptor 
     @Override
     public int getIndex() {
         return this.index;
+    }
+
+    @Override
+    public int getDataType() {
+        return this.dataType;
     }
 
 }

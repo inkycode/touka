@@ -2,6 +2,6 @@ package com.inkycode.touka.core.graphics;
 
 public interface Vertex {
     
-    float get(final int index);
+    <T> T get(final int index, Class<T> type);
     
 }
