@@ -21,7 +21,6 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 import static com.inkycode.touka.core.graphics.VertexAttributeDescriptor.DATA_TYPE_FLOAT;
 import static com.inkycode.touka.core.graphics.VertexAttributeDescriptor.DATA_TYPE_INTEGER;
 
-import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.HashSet;
