@@ -12,10 +12,10 @@ import com.inkycode.touka.core.bootstrap.annotations.Source;
 import com.inkycode.touka.core.bootstrap.annotations.Via;
 import com.inkycode.touka.core.graphics.Mesh;
 import com.inkycode.touka.core.graphics.MeshFactory;
-import com.inkycode.touka.core.graphics.Primitive;
-import com.inkycode.touka.core.graphics.PrimitiveFactory;
-import com.inkycode.touka.core.graphics.Vertex;
-import com.inkycode.touka.core.graphics.VertexFactory;
+import com.inkycode.touka.core.graphics.primitive.Primitive;
+import com.inkycode.touka.core.graphics.primitive.PrimitiveFactory;
+import com.inkycode.touka.core.graphics.vertex.Vertex;
+import com.inkycode.touka.core.graphics.vertex.VertexFactory;
 
 public class OpenGLMeshFactory implements MeshFactory {
 

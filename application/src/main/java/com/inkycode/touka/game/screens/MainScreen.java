@@ -10,10 +10,10 @@ import com.inkycode.touka.core.bootstrap.annotations.Named;
 import com.inkycode.touka.core.bootstrap.annotations.Source;
 import com.inkycode.touka.core.graphics.Mesh;
 import com.inkycode.touka.core.graphics.MeshFactory;
-import com.inkycode.touka.core.graphics.PrimitiveFactory;
+import com.inkycode.touka.core.graphics.primitive.PrimitiveFactory;
 import com.inkycode.touka.core.graphics.Renderer;
 import com.inkycode.touka.core.graphics.ShaderProgram;
-import com.inkycode.touka.core.graphics.VertexFactory;
+import com.inkycode.touka.core.graphics.vertex.VertexFactory;
 import com.inkycode.touka.core.platform.Canvas;
 
 public class MainScreen implements Screen {
@@ -44,7 +44,6 @@ public class MainScreen implements Screen {
 
     @Override
     public void load() {
-
         int maxXSections = 10;
         int maxYSections = 8;
 
@@ -71,6 +70,7 @@ public class MainScreen implements Screen {
                 primitiveFactory.setIndex(1, primitiveOffset + 1);
                 primitiveFactory.setIndex(2, primitiveOffset + 2);
                 meshFactory.addPrimitive(primitiveFactory.build());
+
                 primitiveOffset += 3;
 
                 vertexFactory.setAttribute(0, new float[] {xPos4, yPos4, zPos4}); meshFactory.addVertex(vertexFactory.build());

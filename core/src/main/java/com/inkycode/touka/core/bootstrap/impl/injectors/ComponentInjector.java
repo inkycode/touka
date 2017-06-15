@@ -11,6 +11,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.inkycode.touka.Touka;
 import com.inkycode.touka.core.bootstrap.Component;
 import com.inkycode.touka.core.bootstrap.ComponentFactory;
 import com.inkycode.touka.core.bootstrap.Injector;
@@ -36,7 +37,7 @@ public class ComponentInjector implements Injector {
             final Map<String, Object> componentInstanceMap = new HashMap<String, Object>();
 
             for (final Component componentToInject : componentFactory.getComponents(componentInterface)) {
-                componentToInject.activate();
+                componentFactory.activateComponent(componentToInject);
 
                 LOG.info("Putting component instance '{}' into map", componentToInject.getInstanceName());
                 componentInstanceMap.put(componentToInject.getInstanceName(), componentToInject.getInstance());
@@ -67,7 +68,7 @@ public class ComponentInjector implements Injector {
                         final Component componentToInject = componentFactory.getComponent(componentInterface, name);
 
                         if (componentToInject != null) {
-                            componentToInject.activate();
+                            componentFactory.activateComponent(componentToInject);
 
                             LOG.info("Adding component instance '{}' to set", componentToInject.getInstanceName());
                             componentInstanceSet.add(componentToInject.getInstance());
@@ -116,7 +117,7 @@ public class ComponentInjector implements Injector {
             }
 
             if (componentToInject != null) {
-                componentToInject.activate();
+                componentFactory.activateComponent(componentToInject);
 
                 LOG.info("Returning component value to target field '{}'", field.getName());
                 return componentToInject.getInstance();

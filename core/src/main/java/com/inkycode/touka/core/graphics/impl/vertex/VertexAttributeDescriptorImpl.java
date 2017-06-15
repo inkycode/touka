@@ -1,8 +1,8 @@
-package com.inkycode.touka.core.graphics.impl.vertexattributedescriptor;
+package com.inkycode.touka.core.graphics.impl.vertex;
 
 import com.inkycode.touka.core.bootstrap.annotations.Inject;
 import com.inkycode.touka.core.bootstrap.annotations.Source;
-import com.inkycode.touka.core.graphics.VertexAttributeDescriptor;
+import com.inkycode.touka.core.graphics.vertex.VertexAttributeDescriptor;
 
 public class VertexAttributeDescriptorImpl implements VertexAttributeDescriptor {
 

@@ -1,6 +1,6 @@
 package com.inkycode.touka.core.graphics.impl.primitive;
 
-import com.inkycode.touka.core.graphics.Primitive;
+import com.inkycode.touka.core.graphics.primitive.Primitive;
 
 public class PrimitiveImpl implements Primitive {
 

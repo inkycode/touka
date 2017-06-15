@@ -1,6 +1,6 @@
 package com.inkycode.touka.core.graphics.impl.vertex;
 
-import com.inkycode.touka.core.graphics.Vertex;
+import com.inkycode.touka.core.graphics.vertex.Vertex;
 
 import java.util.Map;
 import java.util.TreeMap;

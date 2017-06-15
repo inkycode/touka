@@ -1,4 +1,4 @@
-package com.inkycode.touka.core.graphics;
+package com.inkycode.touka.core.graphics.vertex;
 
 public interface Vertex {
     

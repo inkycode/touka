@@ -13,7 +13,11 @@ public interface ComponentFactory {
 
     void injectComponents();
 
+    void injectComponent(final Component component);
+
     void activateComponents();
+
+    void activateComponent(final Component component);
 
     void createComponent(final String instanceName, final Map<String, Object> properties);
 

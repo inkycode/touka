@@ -9,9 +9,9 @@ import com.inkycode.touka.core.bootstrap.annotations.Inject;
 import com.inkycode.touka.core.bootstrap.annotations.Named;
 import com.inkycode.touka.core.bootstrap.annotations.Source;
 import com.inkycode.touka.core.bootstrap.annotations.Via;
-import com.inkycode.touka.core.graphics.Vertex;
-import com.inkycode.touka.core.graphics.VertexAttributeDescriptor;
-import com.inkycode.touka.core.graphics.VertexFactory;
+import com.inkycode.touka.core.graphics.vertex.Vertex;
+import com.inkycode.touka.core.graphics.vertex.VertexAttributeDescriptor;
+import com.inkycode.touka.core.graphics.vertex.VertexFactory;
 
 public class VertexFactoryImpl implements VertexFactory {
 

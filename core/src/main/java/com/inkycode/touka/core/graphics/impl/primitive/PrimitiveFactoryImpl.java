@@ -1,19 +1,13 @@
 package com.inkycode.touka.core.graphics.impl.primitive;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import javax.xml.stream.events.ProcessingInstruction;
-
 import com.inkycode.touka.core.bootstrap.annotations.Activate;
 import com.inkycode.touka.core.bootstrap.annotations.Inject;
 import com.inkycode.touka.core.bootstrap.annotations.Named;
 import com.inkycode.touka.core.bootstrap.annotations.Source;
 import com.inkycode.touka.core.bootstrap.annotations.Via;
-import com.inkycode.touka.core.graphics.Primitive;
-import com.inkycode.touka.core.graphics.PrimitiveDescriptor;
-import com.inkycode.touka.core.graphics.PrimitiveFactory;
+import com.inkycode.touka.core.graphics.primitive.Primitive;
+import com.inkycode.touka.core.graphics.primitive.PrimitiveDescriptor;
+import com.inkycode.touka.core.graphics.primitive.PrimitiveFactory;
 
 public class PrimitiveFactoryImpl implements PrimitiveFactory {
 

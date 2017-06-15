@@ -20,8 +20,8 @@ import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 
 import static org.lwjgl.system.MemoryStack.stackPush;
 
-import static com.inkycode.touka.core.graphics.VertexAttributeDescriptor.DATA_TYPE_FLOAT;
-import static com.inkycode.touka.core.graphics.VertexAttributeDescriptor.DATA_TYPE_INTEGER;
+import static com.inkycode.touka.core.graphics.vertex.VertexAttributeDescriptor.DATA_TYPE_FLOAT;
+import static com.inkycode.touka.core.graphics.vertex.VertexAttributeDescriptor.DATA_TYPE_INTEGER;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -31,10 +31,10 @@ import java.util.Set;
 import org.lwjgl.system.MemoryStack;
 
 import com.inkycode.touka.core.graphics.Mesh;
-import com.inkycode.touka.core.graphics.Primitive;
-import com.inkycode.touka.core.graphics.PrimitiveDescriptor;
-import com.inkycode.touka.core.graphics.Vertex;
-import com.inkycode.touka.core.graphics.VertexAttributeDescriptor;
+import com.inkycode.touka.core.graphics.primitive.Primitive;
+import com.inkycode.touka.core.graphics.primitive.PrimitiveDescriptor;
+import com.inkycode.touka.core.graphics.vertex.Vertex;
+import com.inkycode.touka.core.graphics.vertex.VertexAttributeDescriptor;
 
 public class OpenGLMesh implements Mesh {
 

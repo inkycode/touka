@@ -4,6 +4,8 @@ import static com.inkycode.touka.core.bootstrap.impl.ComponentImpl.COMPONENT_PRO
 import static com.inkycode.touka.core.bootstrap.impl.ComponentImpl.COMPONENT_PROPERTY_NAME_BOOTSTRAP_INTERFACE_CLASS;
 import static com.inkycode.touka.core.bootstrap.impl.ComponentImpl.COMPONENT_PROPERTY_NAME_BOOTSTRAP_INSTANCE_NAME;
 
+import static com.inkycode.touka.core.bootstrap.Component.COMPONENT_STATE_ACTIVE;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +24,7 @@ import java.util.jar.JarFile;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import com.inkycode.touka.core.application.Application;
 import com.inkycode.touka.core.bootstrap.Component;
 import com.inkycode.touka.core.bootstrap.ComponentFactory;
 import com.inkycode.touka.core.bootstrap.Injector;
@@ -44,9 +47,7 @@ public class ComponentFactoryImpl implements ComponentFactory {
     public void initialise(final String configurationPath) {
         this.createComponents(configurationPath);
 
-        this.injectComponents();
-
-        this.activateComponents();
+        this.activateComponent(this.getComponent(Application.class));
     }
 
     @Override
@@ -74,13 +75,27 @@ public class ComponentFactoryImpl implements ComponentFactory {
     @Override
     public void injectComponents() {
         for (final Component component : this.getComponents()) {
-            component.inject(this.getComponentInstances(Injector.class), this);
+            this.injectComponent(component);
         }
+    }
+
+    @Override
+    public void injectComponent(final Component component) {
+        component.inject(this.getComponentInstances(Injector.class), this);
     }
 
     @Override
     public void activateComponents() {
         for (final Component component : this.getComponents()) {
+            this.activateComponent(component);
+        }
+    }
+
+    @Override
+    public void activateComponent(final Component component) {
+        if (component.getState() != COMPONENT_STATE_ACTIVE) {
+            this.injectComponent(component);
+
             component.activate();
         }
     }
