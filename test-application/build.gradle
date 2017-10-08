@@ -1,0 +1,25 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0'
+    }
+}
+
+apply plugin: 'com.github.johnrengelman.plugin-shadow'
+apply plugin: 'application'
+
+dependencies {
+    compile project(':bootstrap'),
+            project(':graphics'),
+            project(':application')
+}
+
+mainClassName = "${project.group}.Touka"
+
+shadowJar {
+    relocate 'com.inkycode', 'com.inkycode'
+    relocate 'org.lwjgl', 'org.lwjgl'
+}

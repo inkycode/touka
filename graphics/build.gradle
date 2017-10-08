@@ -1,0 +1,29 @@
+project.ext.lwjglVersion = "3.1.1"
+project.ext.jomlVersion = "1.9.3"
+
+import org.gradle.internal.os.OperatingSystem
+
+switch ( OperatingSystem.current() ) {
+    case OperatingSystem.WINDOWS:
+        project.ext.lwjglNatives = "natives-windows"
+        break
+    case OperatingSystem.LINUX:
+        project.ext.lwjglNatives = "natives-linux"
+        break
+    case OperatingSystem.MAC_OS:
+        project.ext.lwjglNatives = "natives-macos"
+        break
+}
+
+dependencies {
+    compile "org.lwjgl:lwjgl:${lwjglVersion}",
+            "org.lwjgl:lwjgl-glfw:${lwjglVersion}",
+            "org.lwjgl:lwjgl-opengl:${lwjglVersion}",
+            "org.joml:joml:${jomlVersion}",
+            project(':bootstrap')
+
+    runtime "org.lwjgl:lwjgl:${lwjglVersion}:${lwjglNatives}",
+            "org.lwjgl:lwjgl-glfw:${lwjglVersion}:${lwjglNatives}",
+            "org.lwjgl:lwjgl-opengl:${lwjglVersion}:${lwjglNatives}",
+            "org.joml:joml:${jomlVersion}"
+}
