@@ -1,0 +1,12 @@
+dependencies {
+    compile "org.lwjgl:lwjgl:${lwjglVersion}",
+            "org.lwjgl:lwjgl-glfw:${lwjglVersion}",
+            "org.lwjgl:lwjgl-opengl:${lwjglVersion}",
+            "org.joml:joml:${jomlVersion}",
+            project(':bootstrap')
+
+    runtime "org.lwjgl:lwjgl:${lwjglVersion}:${lwjglNatives}",
+            "org.lwjgl:lwjgl-glfw:${lwjglVersion}:${lwjglNatives}",
+            "org.lwjgl:lwjgl-opengl:${lwjglVersion}:${lwjglNatives}",
+            "org.joml:joml:${jomlVersion}"
+}
