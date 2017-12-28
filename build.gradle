@@ -12,7 +12,7 @@ subprojects {
         jcenter()
     }
 
-    switch ( OperatingSystem.current() ) {
+    switch (OperatingSystem.current()) {
         case OperatingSystem.WINDOWS:
             project.ext.lwjglNatives = "natives-windows"
             break

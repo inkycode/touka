@@ -1,3 +1,5 @@
+import org.gradle.internal.os.OperatingSystem
+
 buildscript {
     repositories {
         jcenter()
@@ -24,6 +26,8 @@ shadowJar {
     relocate 'org.lwjgl', 'org.lwjgl'
 }
 
-runShadow {
-    jvmArgs '-XstartOnFirstThread'
+if (OperatingSystem.current() == OperatingSystem.MAC_OS) {
+    runShadow {
+        jvmArgs '-XstartOnFirstThread'
+    }
 }
