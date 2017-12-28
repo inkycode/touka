@@ -23,3 +23,7 @@ shadowJar {
     relocate 'com.inkycode', 'com.inkycode'
     relocate 'org.lwjgl', 'org.lwjgl'
 }
+
+runShadow {
+    jvmArgs '-XstartOnFirstThread'
+}
